@@ -118,19 +118,55 @@
         <div class="devo-divider"><span>✦</span></div>
 
         <div class="devo-refs">
-          <h4>Referências Bíblicas</h4>
+          <h4>Saiba Mais</h4>
           <div class="devo-refs-list">
             ${devo.references.map(r => `<span class="devo-ref-item">${r}</span>`).join('')}
           </div>
         </div>
 
         <div class="devo-prayer">
-          <h4>Oração do Dia</h4>
+          <h4>Declaração de Fé</h4>
           <p>${devo.prayer}<span class="amen">Amém.</span></p>
+        </div>
+
+        <div class="devo-journal">
+          <div class="devo-journal-title">Registro Pessoal</div>
+          <div class="journal-box">
+            <div class="journal-box-header">
+              <span class="journal-box-number">1</span>
+              <label class="journal-label">Escreva 3 coisas que você aprendeu hoje</label>
+            </div>
+            <textarea class="journal-textarea" data-key="learned" placeholder="1. &#10;2. &#10;3. "></textarea>
+          </div>
+          <div class="journal-box">
+            <div class="journal-box-header">
+              <span class="journal-box-number">2</span>
+              <label class="journal-label">O que o Espírito Santo está me falando</label>
+            </div>
+            <textarea class="journal-textarea" data-key="spirit" placeholder="Escreva aqui o que o Espírito Santo está falando ao seu coração..."></textarea>
+          </div>
+          <div class="journal-box">
+            <div class="journal-box-header">
+              <span class="journal-box-number">3</span>
+              <label class="journal-label">Registre 3 palavras-chave que definem a devocional deste dia</label>
+            </div>
+            <textarea class="journal-textarea" data-key="keywords" placeholder="Ex: Graça, Identidade, Missão"></textarea>
+          </div>
         </div>
       `;
 
       readerContent.innerHTML = html;
+
+      // Load and wire journal entries
+      const journalData = loadJournalEntries(day);
+      readerContent.querySelectorAll('.journal-textarea').forEach(textarea => {
+        const key = textarea.dataset.key;
+        if (journalData[key]) textarea.value = journalData[key];
+        textarea.addEventListener('input', () => {
+          saveJournalEntry(day, key, textarea.value);
+        });
+      });
+
       readerContent.classList.remove('fade-out');
       readerContent.classList.add('fade-in');
 
@@ -512,7 +548,7 @@
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       switch (e.key) {
         case 'ArrowLeft': navigateTo(state.currentDay - 1); break;
         case 'ArrowRight': navigateTo(state.currentDay + 1); break;
@@ -534,6 +570,23 @@
       touchEndX = e.changedTouches[0].screenX;
       handleSwipe();
     }, { passive: true });
+  }
+
+  // ========================================
+  // ========================================
+  // Journal / Personal Register
+  // ========================================
+
+  function saveJournalEntry(day, key, value) {
+    const storageKey = `d365-journal-${day}`;
+    const existing = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    existing[key] = value;
+    localStorage.setItem(storageKey, JSON.stringify(existing));
+  }
+
+  function loadJournalEntries(day) {
+    const storageKey = `d365-journal-${day}`;
+    return JSON.parse(localStorage.getItem(storageKey) || '{}');
   }
 
   // ========================================
