@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>codrsync — Acesso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #0a0a0f;
+      --bg2:        #12121a;
+      --bg3:        #1a1a26;
+      --cyan:       #00d4ff;
+      --purple:     #7c3aed;
+      --green:      #10b981;
+      --red:        #ef4444;
+      --white:      #f0f0f0;
+      --gray:       #6b7280;
+      --gray-light: #9ca3af;
+      --border:     rgba(255,255,255,0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 20% 30%, rgba(0,212,255,0.04) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(124,58,237,0.04) 0%, transparent 55%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    /* ── Logo ── */
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--cyan) 0%, #a78bfa 60%, var(--cyan) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+
+    /* ── Flash message ── */
+    .flash {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .flash.show { display: flex; }
+    .flash.warning {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: #fbbf24;
+    }
+    .flash.error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #f87171;
+    }
+    .flash.success {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: #34d399;
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 13px;
+      color: var(--gray-light);
+      margin-bottom: 28px;
+    }
+
+    /* ── Form ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: rgba(0,212,255,0.5);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+    }
+
+    input::placeholder { color: var(--gray); }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--red);
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* ── Submit button ── */
+    .btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border: none;
+      border-radius: 12px;
+      color: #0a0a0f;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,212,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,212,255,0.35); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #0a0a0f;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ── */
+    .footer {
+      font-size: 11px;
+      color: var(--gray);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .conf-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: 100px;
+      border: 1px solid rgba(239,68,68,0.25);
+      background: rgba(239,68,68,0.06);
+      font-size: 10px; color: #f87171;
+      text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;
+    }
+
+    @media (max-width: 440px) {
+      .card { padding: 24px; }
+      body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="logo">codrsync</div>
+
+  <!-- Flash messages (populated by JS based on URL params) -->
+  <div class="flash" id="flash"></div>
+
+  <div class="card">
+    <div class="card-title">Área restrita</div>
+    <div class="card-sub">Insira suas credenciais para acessar a apresentação.</div>
+
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email" required>
+        <span class="field-error" id="email-err">Informe um e-mail válido.</span>
+      </div>
+
+      <div class="field">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+        <span class="field-error" id="pass-err">Informe a senha.</span>
+      </div>
+
+      <button class="btn" type="submit" id="submit-btn">
+        <span class="spinner" id="spinner"></span>
+        <span id="btn-label">Entrar</span>
+      </button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <div class="conf-badge">🔒 Acesso Confidencial</div><br>
+    Acesso restrito a destinatários autorizados.<br>
+    © 2025 codrsync — Strategic Response
+  </div>
+
+</div>
+
+<script>
+  // ── Flash from URL params ──────────────────────────────────
+  const params = new URLSearchParams(location.search);
+  const reason = params.get('reason');
+  const flash  = document.getElementById('flash');
+
+  if (reason === 'expired') {
+    flash.textContent = '⏱ Sessão expirada. Faça login novamente.';
+    flash.className = 'flash show warning';
+  } else if (reason === 'invalid') {
+    flash.textContent = '⚠ Sessão inválida. Faça login novamente.';
+    flash.className = 'flash show warning';
+  }
+
+  // ── Form submission ────────────────────────────────────────
+  const form    = document.getElementById('login-form');
+  const btn     = document.getElementById('submit-btn');
+  const spinner = document.getElementById('spinner');
+  const label   = document.getElementById('btn-label');
+  const emailEl = document.getElementById('email');
+  const passEl  = document.getElementById('password');
+
+  function setLoading(on) {
+    btn.disabled = on;
+    spinner.style.display = on ? 'block' : 'none';
+    label.textContent = on ? 'Entrando...' : 'Entrar';
+  }
+
+  function showFlash(msg, type) {
+    flash.textContent = msg;
+    flash.className = 'flash show ' + type;
+  }
+
+  function clearErrors() {
+    document.getElementById('email-err').classList.remove('show');
+    document.getElementById('pass-err').classList.remove('show');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+
+    const email    = emailEl.value.trim();
+    const password = passEl.value;
+    let valid = true;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('email-err').classList.add('show');
+      valid = false;
+    }
+    if (!password) {
+      document.getElementById('pass-err').classList.add('show');
+      valid = false;
+    }
+    if (!valid) return;
+
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showFlash('✓ Bem-vindo, ' + data.name + '! Redirecionando...', 'success');
+        setTimeout(() => { window.location.href = '/'; }, 800);
+      } else if (res.status === 429) {
+        showFlash('🚫 ' + data.error, 'error');
+      } else {
+        showFlash('✗ ' + data.error, 'error');
+        passEl.value = '';
+        passEl.focus();
+      }
+    } catch {
+      showFlash('✗ Erro de conexão. Tente novamente.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  // Auto-focus email field
+  emailEl.focus();
+</script>
+</body>
+</html>

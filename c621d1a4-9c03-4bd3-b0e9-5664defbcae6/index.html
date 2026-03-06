@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>codrsync — Strategic Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #12121a;
+      --bg3: #1a1a26;
+      --cyan: #00d4ff;
+      --purple: #7c3aed;
+      --green: #10b981;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+      --white: #f0f0f0;
+      --gray: #6b7280;
+      --gray-light: #9ca3af;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      z-index: 1000;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    /* ── Dot nav ── */
+    #nav-dots {
+      position: fixed; right: 20px; top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gray); cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); transform: scale(1.5); }
+    .dot:hover { background: var(--cyan); opacity: 0.7; }
+
+    /* ── Slide counter ── */
+    #slide-counter {
+      position: fixed; bottom: 20px; right: 52px;
+      z-index: 1000; font-size: 11px; color: var(--gray);
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+    }
+
+    /* ── Slides ── */
+    .slide {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 70px 60px 60px;
+      position: relative; overflow: hidden;
+    }
+
+    .slide-content { width: 100%; max-width: 900px; }
+
+    /* ── Fade-in ── */
+    .fi {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fi.v { opacity: 1; transform: none; }
+    .fi.d1 { transition-delay: 0.1s; }
+    .fi.d2 { transition-delay: 0.2s; }
+    .fi.d3 { transition-delay: 0.3s; }
+    .fi.d4 { transition-delay: 0.4s; }
+
+    /* ── Section labels ── */
+    .tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--cyan); font-weight: 600; margin-bottom: 8px; }
+    .h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 800; line-height: 1.1; margin-bottom: 8px; }
+    .accent { color: var(--cyan); }
+
+    /* ── Card base ── */
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-4px); }
+
+    /* ========================================
+       SLIDE 1 — CAPA
+    ======================================== */
+    #slide-1 {
+      background: radial-gradient(ellipse at 20% 50%, rgba(0,212,255,0.05) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 50%, rgba(124,58,237,0.05) 0%, transparent 60%), var(--bg);
+      flex-direction: column; text-align: center;
+    }
+    .s1-logo {
+      font-size: clamp(52px, 8vw, 100px); font-weight: 900; letter-spacing: -0.03em; line-height: 1;
+      background: linear-gradient(135deg, var(--cyan) 0%, #a78bfa 50%, var(--cyan) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .s1-sub { font-size: clamp(16px, 2vw, 24px); color: var(--gray-light); margin-top: 14px; font-weight: 300; }
+    .s1-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 28px; padding: 10px 24px; border-radius: 100px;
+      border: 1px solid rgba(0,212,255,0.3); background: rgba(0,212,255,0.08);
+      font-size: 12px; color: var(--cyan); font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+      animation: pulse-badge 2.5s ease-in-out infinite;
+    }
+    .pdot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); animation: pdot 2s ease-in-out infinite; }
+    @keyframes pulse-badge { 0%,100% { box-shadow: none; } 50% { box-shadow: 0 0 20px 4px rgba(0,212,255,0.15); } }
+    @keyframes pdot { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .s1-arrow { margin-top: 44px; color: var(--gray); font-size: 22px; animation: bounce 2s ease-in-out infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
+
+    /* ========================================
+       SLIDE 2 — TERMINAL
+    ======================================== */
+    #slide-2 { flex-direction: column; gap: 32px; }
+    .s2-row { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+
+    .terminal {
+      background: #0d1117; border-radius: 12px; border: 1px solid var(--border);
+      overflow: hidden; min-width: 340px; flex: 1.4;
+      font-family: 'JetBrains Mono', monospace;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .term-hdr {
+      background: #161b22; padding: 10px 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .tb { width: 12px; height: 12px; border-radius: 50%; }
+    .tb.r { background: #ff5f57; } .tb.y { background: #febc2e; } .tb.g { background: #28c840; }
+    .term-title { font-size: 11px; color: var(--gray); margin-left: 6px; }
+    .term-body { padding: 18px; min-height: 210px; }
+    .tl { font-size: 12px; line-height: 1.9; opacity: 0; }
+    .tl.show { opacity: 1; }
+    .tp { color: var(--cyan); } .tc { color: var(--white); }
+    .to { color: var(--green); } .tcm { color: var(--gray); } .tw { color: var(--yellow); }
+    .cur { display:inline-block; width:7px; height:13px; background:var(--cyan); animation:blink 1s step-end infinite; vertical-align:middle; }
+    @keyframes blink { 50% { opacity:0; } }
+
+    .metrics-col { display: flex; flex-direction: column; gap: 14px; flex: 1; min-width: 160px; }
+    .mc { text-align: center; }
+    .mc-val {
+      font-size: 36px; font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .mc-lbl { font-size: 12px; color: var(--gray-light); margin-top: 2px; }
+
+    /* ========================================
+       SLIDE 3 — SEM vs COM
+    ======================================== */
+    #slide-3 { flex-direction: column; gap: 28px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .sp { background: var(--bg2); border-radius: 16px; padding: 26px; border: 1px solid var(--border); }
+    .sp.bad { border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.03); }
+    .sp.good { border-color: rgba(0,212,255,0.2); background: rgba(0,212,255,0.03); }
+    .sp-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .sp.bad .sp-title { color: var(--red); }
+    .sp.good .sp-title { color: var(--cyan); }
+
+    .dbub {
+      border-radius: 12px; padding: 9px 13px; margin-bottom: 9px;
+      font-size: 13px; line-height: 1.5;
+      opacity: 0; transform: translateX(-8px);
+      transition: opacity 0.4s, transform 0.4s;
+      max-width: 95%;
+    }
+    .dbub.show { opacity: 1; transform: none; }
+    .dbub.u { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.2); color: #fca5a5; margin-left: auto; text-align: right; }
+    .dbub.a { background: rgba(107,114,128,0.12); border: 1px solid rgba(107,114,128,0.2); color: var(--gray-light); }
+
+    .fs {
+      display: flex; align-items: flex-start; gap: 11px; margin-bottom: 11px;
+      opacity: 0; transform: translateX(8px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .fs.show { opacity: 1; transform: none; }
+    .fi-icon {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.3);
+      display: flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 2px;
+    }
+    .fs-txt { font-size: 13px; color: var(--gray-light); line-height: 1.5; }
+    .fs-txt strong { color: var(--cyan); }
+
+    /* ========================================
+       SLIDE 4 — PROVIDERS
+    ======================================== */
+    #slide-4 { flex-direction: column; gap: 28px; }
+    .prov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .prov-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px 18px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+      cursor: pointer; transition: all 0.25s; user-select: none; text-align: center;
+    }
+    .prov-card:hover { border-color: var(--gray); transform: translateY(-2px); }
+    .prov-card.on { border-color: var(--cyan); background: rgba(0,212,255,0.05); }
+    .prov-ico { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .prov-name { font-size: 14px; font-weight: 600; }
+    .prov-model { font-size: 11px; color: var(--gray); font-family: 'JetBrains Mono', monospace; }
+    .toggle { width: 38px; height: 20px; background: var(--bg3); border-radius: 10px; position: relative; border: 1px solid var(--border); transition: background 0.3s; }
+    .prov-card.on .toggle { background: var(--cyan); }
+    .toggle::after { content:''; position:absolute; width:14px; height:14px; border-radius:50%; background:var(--gray); top:2px; left:2px; transition:transform 0.3s, background 0.3s; }
+    .prov-card.on .toggle::after { transform:translateX(18px); background:var(--bg); }
+
+    /* ========================================
+       SLIDE 5 — ROI CALCULATOR
+    ======================================== */
+    #slide-5 { flex-direction: column; gap: 28px; }
+    .calc { background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; padding: 32px; }
+    .sliders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 28px; }
+    .sg label { display: block; font-size: 11px; color: var(--gray-light); margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; }
+    .sg-val { font-size: 26px; font-weight: 800; color: var(--cyan); margin-bottom: 8px; }
+    input[type=range] { -webkit-appearance:none; width:100%; height:4px; border-radius:2px; background:var(--bg3); outline:none; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px rgba(0,212,255,0.4); cursor:pointer; transition:transform 0.2s; }
+    input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
+    .roi-res { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .rr { text-align: center; }
+    .rr-val { font-size: 36px; font-weight: 900; background: linear-gradient(135deg, var(--green), var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .rr-lbl { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+    /* ========================================
+       SLIDE 6 — EVOLUTION
+    ======================================== */
+    #slide-6 { flex-direction: column; gap: 28px; }
+    .evo { display: flex; align-items: center; gap: 0; }
+    .evo-step { flex: 1; text-align: center; position: relative; }
+    .evo-step::after { content:'→'; position:absolute; right:-10px; top:50%; transform:translateY(-50%); color:var(--gray); font-size:18px; }
+    .evo-step:last-child::after { display:none; }
+    .evo-node { width:52px; height:52px; border-radius:13px; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:22px; border:2px solid; }
+    .evo-step:nth-child(1) .evo-node { border-color:var(--gray); background:rgba(107,114,128,0.1); }
+    .evo-step:nth-child(3) .evo-node { border-color:var(--yellow); background:rgba(245,158,11,0.1); }
+    .evo-step:nth-child(5) .evo-node { border-color:var(--cyan); background:rgba(0,212,255,0.1); }
+    .evo-step:nth-child(7) .evo-node { border-color:var(--purple); background:rgba(124,58,237,0.1); }
+    .evo-lbl { font-size:13px; font-weight:600; margin-bottom:3px; }
+    .evo-sub { font-size:11px; color:var(--gray); }
+    .rev-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .rc { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:20px; transition:all 0.3s; }
+    .rc:hover { border-color:var(--cyan); transform:translateY(-4px); }
+    .rc-ico { font-size:26px; margin-bottom:10px; }
+    .rc-title { font-size:15px; font-weight:700; margin-bottom:5px; }
+    .rc-desc { font-size:12px; color:var(--gray-light); line-height:1.6; }
+    .rc-amount { font-size:20px; font-weight:800; color:var(--cyan); margin-top:10px; }
+
+    /* ========================================
+       SLIDE 7 — COMPARISON TABLE
+    ======================================== */
+    #slide-7 { flex-direction: column; gap: 28px; }
+    .ctable { width:100%; border-collapse:collapse; border-radius:14px; overflow:hidden; }
+    .ctable th { padding:14px 18px; text-align:left; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; }
+    .ctable th:first-child { background:var(--bg3); color:var(--gray-light); }
+    .ctable th:nth-child(2) { background:rgba(239,68,68,0.1); color:var(--red); }
+    .ctable th:nth-child(3) { background:rgba(245,158,11,0.1); color:var(--yellow); }
+    .ctable th:nth-child(4) { background:rgba(0,212,255,0.1); color:var(--cyan); }
+    .ctable td { padding:12px 18px; font-size:13px; border-top:1px solid var(--border); }
+    .ctable td:first-child { color:var(--gray-light); font-weight:500; }
+    .ctable tr.hl td { background:rgba(0,212,255,0.03) !important; }
+    .ok { color:var(--green); } .no { color:var(--red); } .partial { color:var(--yellow); font-size:13px; }
+
+    /* ========================================
+       SLIDE 8 — TIMELINE
+    ======================================== */
+    #slide-8 { flex-direction: column; gap: 32px; }
+    .tline { display:flex; align-items:flex-start; position:relative; }
+    .tline::before { content:''; position:absolute; top:26px; left:55px; right:55px; height:2px; background:linear-gradient(90deg, var(--cyan), var(--purple)); }
+    .tl-item { flex:1; text-align:center; padding-top:56px; position:relative; }
+    .tl-dot { position:absolute; top:16px; left:50%; transform:translateX(-50%); width:22px; height:22px; border-radius:50%; border:3px solid var(--cyan); background:var(--bg); z-index:1; }
+    .tl-dot.act { background:var(--cyan); box-shadow:0 0 12px var(--cyan); }
+    .tl-q { font-size:10px; font-weight:700; color:var(--cyan); text-transform:uppercase; letter-spacing:0.2em; margin-bottom:5px; }
+    .tl-m { font-size:13px; font-weight:600; margin-bottom:4px; line-height:1.3; }
+    .tl-d { font-size:11px; color:var(--gray); line-height:1.5; }
+    .inv-cmp { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .ib { background:var(--bg2); border:1px solid var(--border); border-radius:13px; padding:22px; }
+    .ib.hi { border-color:rgba(0,212,255,0.4); background:rgba(0,212,255,0.04); }
+    .ib-lbl { font-size:11px; color:var(--gray); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.1em; }
+    .ib-amt { font-size:30px; font-weight:900; color:var(--cyan); }
+    .ib-dtl { font-size:12px; color:var(--gray-light); margin-top:8px; line-height:1.6; }
+
+    /* ========================================
+       SLIDE 9 — DEAL
+    ======================================== */
+    #slide-9 { flex-direction: column; gap: 28px; }
+    .deal-cards { display:grid; grid-template-columns:1fr 1fr; gap:22px; position:relative; }
+    .dc { background:var(--bg2); border-radius:18px; padding:30px; border:1px solid var(--border); transition:transform 0.3s; }
+    .dc:hover { transform:translateY(-5px); }
+    .dc.eq { border-color:rgba(124,58,237,0.4); background:rgba(124,58,237,0.04); }
+    .dc.ct { border-color:rgba(0,212,255,0.4); background:rgba(0,212,255,0.04); }
+    .dc-ico { font-size:34px; margin-bottom:14px; }
+    .dc-title { font-size:20px; font-weight:800; margin-bottom:6px; }
+    .dc-sub { font-size:12px; color:var(--gray-light); margin-bottom:18px; }
+    .di { display:flex; align-items:flex-start; gap:9px; margin-bottom:9px; font-size:13px; color:var(--gray-light); line-height:1.5; }
+    .di::before { content:'◆'; font-size:7px; color:var(--cyan); margin-top:5px; flex-shrink:0; }
+    .dc-val { font-size:26px; font-weight:900; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); }
+    .dc.eq .dc-val { color:#a78bfa; }
+    .dc.ct .dc-val { color:var(--cyan); }
+    .or-badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--bg); border:2px solid var(--border); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; color:var(--gray-light); z-index:2; }
+
+    /* ========================================
+       SLIDE 10 — PROJECTIONS
+    ======================================== */
+    #slide-10 { flex-direction: column; gap: 26px; }
+    .proj-split { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+    .pp { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:26px; }
+    .pp.inv { border-color:rgba(245,158,11,0.3); }
+    .pp.ciro { border-color:rgba(124,58,237,0.3); }
+    .pp-hdr { display:flex; align-items:center; gap:11px; margin-bottom:22px; }
+    .pp-av { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .pp.inv .pp-av { background:rgba(245,158,11,0.15); }
+    .pp.ciro .pp-av { background:rgba(124,58,237,0.15); }
+    .pp-name { font-size:17px; font-weight:700; }
+    .pp-role { font-size:12px; color:var(--gray); }
+    .pr { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
+    .pr:last-of-type { border-bottom:none; }
+    .pr-l { color:var(--gray-light); }
+    .pr-v { font-weight:700; }
+    .pp.inv .pr-v { color:var(--yellow); }
+    .pp.ciro .pr-v { color:#a78bfa; }
+    .pp-total { margin-top:14px; padding-top:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700; border-top:2px solid; }
+    .pp.inv .pp-total { border-color:var(--yellow); }
+    .pp.ciro .pp-total { border-color:#a78bfa; }
+    .pp-tv { font-size:26px; font-weight:900; }
+    .pp.inv .pp-tv { color:var(--yellow); }
+    .pp.ciro .pp-tv { color:#a78bfa; }
+
+    /* ========================================
+       SLIDE 11 — STEPS
+    ======================================== */
+    #slide-11 { flex-direction: column; gap: 28px; align-items: flex-start; }
+    .steps { display:flex; flex-direction:column; gap:0; position:relative; max-width:680px; width:100%; }
+    .steps::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom, var(--cyan), var(--purple)); }
+    .si { display:flex; align-items:flex-start; gap:22px; padding:18px 0; }
+    .sn { width:42px; height:42px; border-radius:50%; border:2px solid var(--cyan); background:var(--bg); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:var(--cyan); flex-shrink:0; z-index:1; }
+    .si-title { font-size:17px; font-weight:700; margin-bottom:4px; }
+    .si-desc { font-size:13px; color:var(--gray-light); line-height:1.6; }
+    .cta-btn {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:15px 38px; background:linear-gradient(135deg, var(--cyan), var(--purple));
+      border-radius:100px; font-size:15px; font-weight:700; color:var(--bg);
+      cursor:pointer; border:none; transition:all 0.3s;
+      box-shadow:0 8px 28px rgba(0,212,255,0.3);
+      text-decoration:none; letter-spacing:0.02em;
+    }
+    .cta-btn:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 36px rgba(0,212,255,0.4); }
+
+    /* ========================================
+       SLIDE 12 — CLOSING
+    ======================================== */
+    #slide-12 {
+      flex-direction:column; align-items:center; text-align:center;
+      background: radial-gradient(ellipse at center, rgba(0,212,255,0.06) 0%, transparent 70%), var(--bg);
+    }
+    .tw-txt { font-size:clamp(26px,4vw,50px); font-weight:800; line-height:1.25; min-height:2.6em; max-width:780px; }
+    .tw-cur { display:inline-block; width:4px; height:1em; background:var(--cyan); vertical-align:middle; margin-left:2px; animation:blink 1s step-end infinite; }
+    .contact-row { margin-top:36px; display:flex; gap:36px; justify-content:center; flex-wrap:wrap; }
+    .ci { display:flex; flex-direction:column; align-items:center; gap:5px; }
+    .ci-lbl { font-size:10px; color:var(--gray); text-transform:uppercase; letter-spacing:0.2em; }
+    .ci-val { font-size:14px; font-weight:600; color:var(--cyan); }
+    .conf-badge { margin-top:36px; display:inline-flex; align-items:center; gap:7px; padding:7px 18px; border:1px solid rgba(239,68,68,0.3); background:rgba(239,68,68,0.05); border-radius:100px; font-size:11px; color:var(--red); text-transform:uppercase; letter-spacing:0.2em; font-weight:600; }
+
+    /* ========================================
+       PRINT
+    ======================================== */
+    @media print {
+      html { scroll-snap-type:none; overflow:auto; }
+      body { background:#fff; color:#000; }
+      .slide { page-break-after:always; min-height:auto; padding:32px; scroll-snap-align:none; }
+      #progress-bar, #nav-dots, #slide-counter { display:none !important; }
+    }
+
+    /* ========================================
+       MOBILE
+    ======================================== */
+    @media (max-width: 768px) {
+      .slide { padding: 50px 20px 50px 20px; }
+      #nav-dots { right: 8px; }
+      #slide-counter { right: 28px; }
+      .split, .sliders, .prov-grid, .rev-cards, .deal-cards, .proj-split, .inv-cmp { grid-template-columns: 1fr; }
+      .or-badge { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:8.33%"></div>
+<nav id="nav-dots"></nav>
+<div id="slide-counter">Slide 1 de 12</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 1 — CAPA
+════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+  <div class="fi" style="display:flex;flex-direction:column;align-items:center;">
+    <div class="s1-logo">codrsync</div>
+    <div class="s1-sub">Plataforma de IA para Times de Desenvolvimento</div>
+    <div class="s1-badge"><span class="pdot"></span>Strategic Response 2025</div>
+    <div class="s1-arrow">↓</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 2 — TERMINAL
+════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Por que codrsync</div>
+    <div class="h1">Desenvolvimento <span class="accent">10× mais rápido</span></div></div>
+    <div class="fi d1 s2-row">
+      <div class="terminal">
+        <div class="term-hdr">
+          <div class="tb r"></div><div class="tb y"></div><div class="tb g"></div>
+          <span class="term-title">~/projeto — codrsync agent</span>
+        </div>
+        <div class="term-body">
+          <div class="tl" id="tl1"><span class="tp">$ </span><span class="tc">codrsync init --template=fullstack</span></div>
+          <div class="tl" id="tl2"><span class="to">✓ Analisando repositório...</span></div>
+          <div class="tl" id="tl3"><span class="to">✓ Stack: Next.js + PostgreSQL + Prisma</span></div>
+          <div class="tl" id="tl4"><span class="to">✓ Context Engineering ativo</span></div>
+          <div class="tl" id="tl5"><span class="tcm"># Gerando analysis.md e PRP.md...</span></div>
+          <div class="tl" id="tl6"><span class="tp">$ </span><span class="tc">codrsync run "implemente autenticação JWT"</span></div>
+          <div class="tl" id="tl7"><span class="to">✓ analysis.md criado (47 linhas)</span></div>
+          <div class="tl" id="tl8"><span class="to">✓ PRP.md criado — 12 tarefas</span></div>
+          <div class="tl" id="tl9"><span class="tw">→ 8 arquivos modificados em 14s</span></div>
+          <div class="tl" id="tl10"><span class="to">✓ Testes passando: 24/24 ✦</span></div>
+          <div class="tl" id="tl11"><span class="cur"></span></div>
+        </div>
+      </div>
+      <div class="metrics-col">
+        <div class="card mc fi d2"><div class="mc-val">10×</div><div class="mc-lbl">Velocidade de entrega</div></div>
+        <div class="card mc fi d3"><div class="mc-val">73%</div><div class="mc-lbl">Redução de custos IA</div></div>
+        <div class="card mc fi d4"><div class="mc-val">99%</div><div class="mc-lbl">Testes aprovados</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 3 — SEM vs COM
+════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Antes & Depois</div>
+    <div class="h1">Como o <span class="accent">codrsync</span> muda o jogo</div></div>
+    <div class="fi d1 split">
+      <div class="sp bad">
+        <div class="sp-title">✗ Sem codrsync</div>
+        <div class="dbub u" id="d1">"Preciso de uma API REST com auth"</div>
+        <div class="dbub a" id="d2">Aqui está um exemplo básico... [500 linhas genéricas sem contexto do projeto]</div>
+        <div class="dbub u" id="d3">"Não funciona, ignorou nosso schema"</div>
+        <div class="dbub a" id="d4">Me desculpe, pode me passar mais contexto?</div>
+        <div class="dbub u" id="d5">😤 (copia-cola tudo de novo...)</div>
+      </div>
+      <div class="sp good">
+        <div class="sp-title">✓ Com codrsync</div>
+        <div class="fs" id="fs1"><div class="fi-icon">📋</div><div class="fs-txt"><strong>Análise:</strong> lê schema, dependências e padrões reais do repositório</div></div>
+        <div class="fs" id="fs2"><div class="fi-icon">🏗️</div><div class="fs-txt"><strong>PRP criado:</strong> plano detalhado antes de qualquer código</div></div>
+        <div class="fs" id="fs3"><div class="fi-icon">⚡</div><div class="fs-txt"><strong>Execução:</strong> código gerado respeitando sua arquitetura</div></div>
+        <div class="fs" id="fs4"><div class="fi-icon">✅</div><div class="fs-txt"><strong>Resultado:</strong> funciona na primeira vez, testes passando</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 4 — PROVIDERS
+════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Flexibilidade</div>
+    <div class="h1">Integra com <span class="accent">qualquer provedor</span> de IA</div>
+    <p style="color:var(--gray-light);font-size:13px;margin-top:6px;">Clique para ativar / desativar provedores</p></div>
+    <div class="fi d1 prov-grid">
+      <div class="prov-card on" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(16,185,129,0.1)">🤖</div>
+        <div class="prov-name">OpenAI</div><div class="prov-model">gpt-4o / o3</div><div class="toggle"></div>
+      </div>
+      <div class="prov-card on" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(245,158,11,0.1)">🧠</div>
+        <div class="prov-name">Anthropic</div><div class="prov-model">claude-sonnet-4-6</div><div class="toggle"></div>
+      </div>
+      <div class="prov-card" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(59,130,246,0.1)">✨</div>
+        <div class="prov-name">Google</div><div class="prov-model">gemini-2.0-pro</div><div class="toggle"></div>
+      </div>
+      <div class="prov-card" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(245,158,11,0.1)">☁️</div>
+        <div class="prov-name">AWS Bedrock</div><div class="prov-model">nova-pro</div><div class="toggle"></div>
+      </div>
+      <div class="prov-card" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(59,130,246,0.1)">🔷</div>
+        <div class="prov-name">Azure OpenAI</div><div class="prov-model">gpt-4o-azure</div><div class="toggle"></div>
+      </div>
+      <div class="prov-card" onclick="this.classList.toggle('on')">
+        <div class="prov-ico" style="background:rgba(124,58,237,0.1)">🏠</div>
+        <div class="prov-name">Local / BYOK</div><div class="prov-model">ollama · lm-studio</div><div class="toggle"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 5 — ROI CALCULATOR
+════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Calculadora ROI</div>
+    <div class="h1">Quanto você <span class="accent">economiza</span> com codrsync?</div></div>
+    <div class="fi d1 calc">
+      <div class="sliders">
+        <div class="sg">
+          <label>Tamanho do time</label>
+          <div class="sg-val" id="v-team">5 devs</div>
+          <input type="range" id="s-team" min="1" max="50" value="5" oninput="calcROI()">
+        </div>
+        <div class="sg">
+          <label>Horas/semana em IA</label>
+          <div class="sg-val" id="v-hours">10 horas</div>
+          <input type="range" id="s-hours" min="1" max="40" value="10" oninput="calcROI()">
+        </div>
+        <div class="sg">
+          <label>Custo hora (USD)</label>
+          <div class="sg-val" id="v-cost">$50/h</div>
+          <input type="range" id="s-cost" min="20" max="200" value="50" step="5" oninput="calcROI()">
+        </div>
+      </div>
+      <div class="roi-res">
+        <div class="rr"><div class="rr-val" id="r-monthly">$4.3k</div><div class="rr-lbl">Economia mensal</div></div>
+        <div class="rr"><div class="rr-val" id="r-roi">296%</div><div class="rr-lbl">ROI estimado</div></div>
+        <div class="rr"><div class="rr-val" id="r-payback">10 dias</div><div class="rr-lbl">Payback</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 6 — EVOLUTION
+════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Modelos de negócio</div>
+    <div class="h1">Evolução de <span class="accent">produto & receita</span></div></div>
+    <div class="fi d1 evo">
+      <div class="evo-step"><div class="evo-node">🆓</div><div class="evo-lbl">Free</div><div class="evo-sub">Trial 30min</div></div>
+      <div style="flex:0.2"></div>
+      <div class="evo-step"><div class="evo-node">💳</div><div class="evo-lbl">Credits</div><div class="evo-sub">Pay-as-you-go</div></div>
+      <div style="flex:0.2"></div>
+      <div class="evo-step"><div class="evo-node">⚡</div><div class="evo-lbl">Pro</div><div class="evo-sub">$29/mês</div></div>
+      <div style="flex:0.2"></div>
+      <div class="evo-step"><div class="evo-node">🏢</div><div class="evo-lbl">Enterprise</div><div class="evo-sub">Custom</div></div>
+    </div>
+    <div class="fi d2 rev-cards">
+      <div class="rc">
+        <div class="rc-ico">🔑</div>
+        <div class="rc-title">BYOK</div>
+        <div class="rc-desc">Traga sua própria API key. Infraestrutura nossa, chave sua. Zero markup em tokens.</div>
+        <div class="rc-amount">Free + Plataforma</div>
+      </div>
+      <div class="rc">
+        <div class="rc-ico">📦</div>
+        <div class="rc-title">Credits Pack</div>
+        <div class="rc-desc">Compre créditos de compute. Ideal para times sem contrato de longo prazo.</div>
+        <div class="rc-amount">$0.01 / task</div>
+      </div>
+      <div class="rc">
+        <div class="rc-ico">♾️</div>
+        <div class="rc-title">Pro Subscription</div>
+        <div class="rc-desc">50 tasks/mês, GitHub integration, workspaces ilimitados, priority support.</div>
+        <div class="rc-amount">$29 / mês</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 7 — COMPARISON TABLE
+════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Análise competitiva</div>
+    <div class="h1">Por que <span class="accent">codrsync vence</span> os concorrentes</div></div>
+    <div class="fi d1" style="overflow-x:auto;">
+      <table class="ctable">
+        <thead>
+          <tr>
+            <th>Funcionalidade</th>
+            <th>Cursor / Copilot</th>
+            <th>Bolt / Lovable</th>
+            <th>codrsync ✦</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Context Engineering</td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr class="hl"><td>Análise de repo real</td><td><span class="partial">~</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>PRP + Planejamento</td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr class="hl"><td>Multi-provider / BYOK</td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>CLI local</td><td><span class="ok">✓</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr class="hl"><td>Workspace persistente</td><td><span class="partial">~</span></td><td><span class="partial">~</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>Geração de apresentações</td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="ok">✓</span></td></tr>
+          <tr class="hl"><td>Preço de entrada</td><td><span style="color:var(--red)">$20/mês</span></td><td><span style="color:var(--yellow)">$20/mês</span></td><td><span class="ok">Grátis → $29</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 8 — TIMELINE
+════════════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Roadmap & Investimento</div>
+    <div class="h1">Plano de <span class="accent">execução 2025</span></div></div>
+    <div class="fi d1 tline">
+      <div class="tl-item">
+        <div class="tl-dot act"></div>
+        <div class="tl-q">Q1 2025</div>
+        <div class="tl-m">MVP + Trial Engine</div>
+        <div class="tl-d">CE methodology, workspace, onboarding flow</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-q">Q2 2025</div>
+        <div class="tl-m">GitHub Integration</div>
+        <div class="tl-d">PR automation, code review, team workspaces</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-q">Q3 2025</div>
+        <div class="tl-m">Enterprise & API</div>
+        <div class="tl-d">SSO, audit logs, white-label, REST API pública</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-q">Q4 2025</div>
+        <div class="tl-m">Scale & Expansion</div>
+        <div class="tl-d">10k usuários, parcerias estratégicas, marketplace</div>
+      </div>
+    </div>
+    <div class="fi d2 inv-cmp">
+      <div class="ib">
+        <div class="ib-lbl">Cenário Bootstrap</div>
+        <div class="ib-amt">$0</div>
+        <div class="ib-dtl">Ramen-profitable em 3 meses<br>5k trial → 500 pagantes<br>$14.500/mês ARR projetado</div>
+      </div>
+      <div class="ib hi">
+        <div class="ib-lbl">Com investimento estratégico</div>
+        <div class="ib-amt">$150k — $300k</div>
+        <div class="ib-dtl">Time de 3–4 pessoas em 60 dias<br>50k trial em 6 meses<br>$500k+ ARR até Q4 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 9 — DEAL
+════════════════════════════════════════ -->
+<section class="slide" id="slide-9">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Proposta</div>
+    <div class="h1">Estrutura de <span class="accent">parceria</span></div></div>
+    <div class="fi d1 deal-cards">
+      <div class="dc eq">
+        <div class="dc-ico">💎</div>
+        <div class="dc-title">Opção Equity</div>
+        <div class="dc-sub">Parceiro fundador estratégico</div>
+        <div class="di">Equity entre 5% e 15% conforme a contribuição</div>
+        <div class="di">Vesting 24 meses com cliff de 6 meses</div>
+        <div class="di">Participação nas decisões estratégicas</div>
+        <div class="di">Acesso antecipado a todas as features Enterprise</div>
+        <div class="di">Benefícios proporcionais ao uso da plataforma</div>
+        <div class="dc-val">5% — 15% equity</div>
+      </div>
+      <div class="or-badge">OU</div>
+      <div class="dc ct">
+        <div class="dc-ico">📋</div>
+        <div class="dc-title">Opção Contrato</div>
+        <div class="dc-sub">Parceria comercial recorrente</div>
+        <div class="di">Contrato 12 meses com renovação automática</div>
+        <div class="di">Acesso Enterprise com SLA 99.9% garantido</div>
+        <div class="di">Suporte dedicado e onboarding do time</div>
+        <div class="di">Revenue share de 20% em indicações fechadas</div>
+        <div class="di">Créditos de plataforma incluídos no contrato</div>
+        <div class="dc-val">$2.500 / mês</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 10 — PROJECTIONS
+════════════════════════════════════════ -->
+<section class="slide" id="slide-10">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Projeções de ganho</div>
+    <div class="h1">O que você <span class="accent">ganha</span> nessa parceria?</div></div>
+    <div class="fi d1 proj-split">
+      <div class="pp inv">
+        <div class="pp-hdr">
+          <div class="pp-av">🏢</div>
+          <div><div class="pp-name">Inventeer</div><div class="pp-role">Parceiro Estratégico</div></div>
+        </div>
+        <div class="pr"><span class="pr-l">Clientes indicados / mês</span><span class="pr-v">10</span></div>
+        <div class="pr"><span class="pr-l">Taxa de conversão</span><span class="pr-v">30%</span></div>
+        <div class="pr"><span class="pr-l">Revenue share / cliente</span><span class="pr-v">$5.80/mês</span></div>
+        <div class="pr"><span class="pr-l">Clientes acumulados (12m)</span><span class="pr-v">36</span></div>
+        <div class="pr"><span class="pr-l">Economia interna estimada</span><span class="pr-v">$8.400/mês</span></div>
+        <div class="pp-total"><span>Valor total 12 meses</span><span class="pp-tv">~$103k</span></div>
+      </div>
+      <div class="pp ciro">
+        <div class="pp-hdr">
+          <div class="pp-av">👤</div>
+          <div><div class="pp-name">Ciro</div><div class="pp-role">Parceiro Individual / Investidor</div></div>
+        </div>
+        <div class="pr"><span class="pr-l">Investimento inicial</span><span class="pr-v">$50k</span></div>
+        <div class="pr"><span class="pr-l">Equity recebido</span><span class="pr-v">8%</span></div>
+        <div class="pr"><span class="pr-l">Valuation atual (pre-money)</span><span class="pr-v">$625k</span></div>
+        <div class="pr"><span class="pr-l">Projeção valuation 24m</span><span class="pr-v">$3M — $5M</span></div>
+        <div class="pr"><span class="pr-l">Retorno estimado (8%)</span><span class="pr-v">$240k — $400k</span></div>
+        <div class="pp-total"><span>Múltiplo projetado</span><span class="pp-tv">4.8× — 8×</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 11 — NEXT STEPS
+════════════════════════════════════════ -->
+<section class="slide" id="slide-11">
+  <div class="slide-content">
+    <div class="fi"><div class="tag">Próximos passos</div>
+    <div class="h1">Como <span class="accent">avançamos</span> juntos</div></div>
+    <div class="fi d1 steps">
+      <div class="si">
+        <div class="sn">1</div>
+        <div><div class="si-title">Alinhamento de modelo</div>
+        <div class="si-desc">Definir estrutura: equity, contrato ou híbrido. Reunião de 30 min para alinhar expectativas e próximos passos.</div></div>
+      </div>
+      <div class="si">
+        <div class="sn">2</div>
+        <div><div class="si-title">Due diligence & acesso</div>
+        <div class="si-desc">Acesso ao produto, métricas reais, código-fonte e conversa com fundadores. Total transparência.</div></div>
+      </div>
+      <div class="si">
+        <div class="sn">3</div>
+        <div><div class="si-title">Termo de intenção (LOI)</div>
+        <div class="si-desc">Documento simples de 2 páginas com termos, timeline e responsabilidades de cada parte.</div></div>
+      </div>
+      <div class="si">
+        <div class="sn">4</div>
+        <div><div class="si-title">Go live em 30 dias</div>
+        <div class="si-desc">Onboarding do time, workspaces configurados, primeiros resultados mensuráveis em 2 semanas.</div></div>
+      </div>
+    </div>
+    <div class="fi d2" style="margin-top:8px;">
+      <a class="cta-btn" href="mailto:founders@codrsync.dev">
+        Agendar conversa → founders@codrsync.dev
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 12 — CLOSING
+════════════════════════════════════════ -->
+<section class="slide" id="slide-12">
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="fi" style="font-size:11px;text-transform:uppercase;letter-spacing:0.3em;color:var(--cyan);margin-bottom:22px;">codrsync</div>
+    <div class="tw-txt fi d1" id="tw-el"><span class="tw-cur"></span></div>
+    <div class="fi d2 contact-row">
+      <div class="ci"><span class="ci-lbl">Website</span><span class="ci-val">codrsync.dev</span></div>
+      <div class="ci"><span class="ci-lbl">E-mail</span><span class="ci-val">founders@codrsync.dev</span></div>
+      <div class="ci"><span class="ci-lbl">GitHub</span><span class="ci-val">github.com/codrsync</span></div>
+    </div>
+    <div class="fi d3 conf-badge">🔒 Confidencial — Uso exclusivo do destinatário</div>
+  </div>
+</section>
+
+<script>
+// ── NAV SETUP ──────────────────────────────────────────────
+const TOTAL = 12;
+let current = 1;
+const navEl = document.getElementById('nav-dots');
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 1 ? ' active' : '');
+  d.title = 'Slide ' + i;
+  d.addEventListener('click', () => goTo(i));
+  navEl.appendChild(d);
+}
+
+function goTo(n) {
+  const el = document.getElementById('slide-' + n);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function setNav(n) {
+  current = n;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === n));
+  document.getElementById('slide-counter').textContent = 'Slide ' + n + ' de ' + TOTAL;
+  document.getElementById('progress-bar').style.width = ((n / TOTAL) * 100) + '%';
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); if (current < TOTAL) goTo(current + 1); }
+  else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); if (current > 1) goTo(current - 1); }
+  else if (e.key === 'ArrowRight') { if (current < TOTAL) goTo(current + 1); }
+  else if (e.key === 'ArrowLeft') { if (current > 1) goTo(current - 1); }
+});
+
+// ── TOUCH SWIPE ───────────────────────────────────────────
+let ty0 = 0;
+document.addEventListener('touchstart', e => { ty0 = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dy = ty0 - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 50) { if (dy > 0 && current < TOTAL) goTo(current + 1); else if (dy < 0 && current > 1) goTo(current - 1); }
+}, { passive: true });
+
+// ── INTERSECTION OBSERVERS ───────────────────────────────
+const triggered = new Set();
+
+const slideObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+      const n = parseInt(e.target.id.replace('slide-', ''));
+      setNav(n);
+      if (!triggered.has(n)) { triggered.add(n); onSlideEnter(n); }
+    }
+  });
+}, { threshold: 0.5 });
+
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); });
+}, { threshold: 0.15 });
+
+for (let i = 1; i <= TOTAL; i++) {
+  const s = document.getElementById('slide-' + i);
+  if (s) slideObs.observe(s);
+}
+document.querySelectorAll('.fi').forEach(el => fadeObs.observe(el));
+
+// ── SLIDE ENTER ANIMATIONS ───────────────────────────────
+function onSlideEnter(n) {
+  if (n === 2) animTerminal();
+  if (n === 3) animSlide3();
+  if (n === 12) startTypewriter();
+}
+
+// Terminal (slide 2)
+function animTerminal() {
+  [['tl1',100],['tl2',550],['tl3',1000],['tl4',1450],['tl5',1900],
+   ['tl6',2350],['tl7',2900],['tl8',3350],['tl9',3800],['tl10',4300],['tl11',4800]]
+  .forEach(([id, ms]) => setTimeout(() => { const el=document.getElementById(id); if(el) el.classList.add('show'); }, ms));
+}
+
+// Slide 3 dialogs + flow steps
+function animSlide3() {
+  [['d1',150],['d2',600],['d3',1100],['d4',1600],['d5',2100],
+   ['fs1',200],['fs2',650],['fs3',1100],['fs4',1550]]
+  .forEach(([id, ms]) => setTimeout(() => { const el=document.getElementById(id); if(el) el.classList.add('show'); }, ms));
+}
+
+// Typewriter (slide 12)
+function startTypewriter() {
+  const msgs = [
+    "O futuro do desenvolvimento\né com Context Engineering.",
+    "Juntos, entregamos\n10× mais rápido.",
+    "Vamos construir isso juntos?"
+  ];
+  const el = document.getElementById('tw-el');
+  let mi = 0, ci = 0, del = false;
+
+  function tick() {
+    const msg = msgs[mi];
+    el.innerHTML = msg.slice(0, ci).replace(/\n/g, '<br>') + '<span class="tw-cur"></span>';
+    if (!del && ci < msg.length) { ci++; setTimeout(tick, 48); }
+    else if (!del && ci === msg.length) {
+      if (mi < msgs.length - 1) setTimeout(() => { del = true; tick(); }, 2400);
+    } else if (del && ci > 0) { ci--; setTimeout(tick, 22); }
+    else { del = false; mi = (mi + 1) % msgs.length; setTimeout(tick, 500); }
+  }
+  setTimeout(tick, 700);
+}
+
+// ── ROI CALCULATOR ───────────────────────────────────────
+function fmt(v) { return v >= 1000 ? '$' + (v/1000).toFixed(1) + 'k' : '$' + v; }
+
+function calcROI() {
+  const t = +document.getElementById('s-team').value;
+  const h = +document.getElementById('s-hours').value;
+  const c = +document.getElementById('s-cost').value;
+  document.getElementById('v-team').textContent = t + (t > 1 ? ' devs' : ' dev');
+  document.getElementById('v-hours').textContent = h + (h > 1 ? ' horas' : ' hora');
+  document.getElementById('v-cost').textContent = '$' + c + '/h';
+  const save = Math.round(t * h * c * 4.33 * 0.40);
+  const codr = t * 29;
+  const roi = Math.round(((save - codr) / Math.max(codr, 1)) * 100);
+  const pb = Math.max(1, Math.round((codr / Math.max(save, 1)) * 30));
+  document.getElementById('r-monthly').textContent = fmt(save);
+  document.getElementById('r-roi').textContent = roi + '%';
+  document.getElementById('r-payback').textContent = pb + ' dias';
+}
+
+calcROI();
+setNav(1);
+</script>
+</body>
+</html>

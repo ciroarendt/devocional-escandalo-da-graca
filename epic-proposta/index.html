@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposta Comercial — EPIC x Mentores</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --dark: #111111;
+      --gray-900: #1a1a1a;
+      --gray-800: #2a2a2a;
+      --gray-700: #3a3a3a;
+      --gray-400: #888888;
+      --gray-200: #cccccc;
+      --gray-100: #eeeeee;
+      --white: #ffffff;
+      --accent: #F5A623;
+      --accent-dark: #d4891a;
+      --accent-light: #ffd07a;
+      --danger: #e05252;
+      --success: #4caf7d;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── UTILITIES ── */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      background: rgba(245,166,35,0.15);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(245,166,35,0.3);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-400);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent);
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent-dark); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,166,35,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .hero-title {
+      font-size: clamp(36px, 7vw, 68px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-desc {
+      font-size: 18px;
+      color: var(--gray-400);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--black);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 16px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); }
+    .btn-ghost {
+      color: var(--gray-200);
+      font-weight: 500;
+      font-size: 15px;
+      padding: 16px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+    .hero-meta {
+      margin-top: 60px;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { }
+    .hero-meta-item .value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+    }
+    .hero-meta-item .label {
+      font-size: 13px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+    .hero-divider {
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+      align-self: stretch;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 96px 0; }
+    section:nth-child(even) { background: var(--gray-900); }
+
+    /* ── URGENCIA ── */
+    .urgencia-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .urgencia-item {
+      background: var(--dark);
+      padding: 32px 28px;
+      transition: background 0.2s;
+    }
+    .urgencia-item:hover { background: var(--gray-900); }
+    .urgencia-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+    .urgencia-item h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .urgencia-item p {
+      font-size: 14px;
+      color: var(--gray-400);
+      line-height: 1.6;
+    }
+
+    /* ── EIXOS ── */
+    .eixos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .eixo-card {
+      background: var(--gray-800);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .eixo-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(245,166,35,0.3);
+    }
+    .eixo-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .eixo-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .eixo-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .eixo-card ul li {
+      font-size: 13px;
+      color: var(--gray-400);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .eixo-card ul li::before {
+      content: '→';
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── NAO É / É ── */
+    .naoe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    @media (max-width: 640px) { .naoe-grid { grid-template-columns: 1fr; } }
+    .naoe-box {
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+    }
+    .naoe-box.nao {
+      background: rgba(224,82,82,0.08);
+      border: 1px solid rgba(224,82,82,0.2);
+    }
+    .naoe-box.sim {
+      background: rgba(76,175,125,0.08);
+      border: 1px solid rgba(76,175,125,0.25);
+    }
+    .naoe-box h3 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .naoe-box.nao h3 { color: var(--danger); }
+    .naoe-box.sim h3 { color: var(--success); }
+    .naoe-box ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .naoe-box ul li {
+      font-size: 15px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .naoe-box.nao ul li::before { content: '✗'; color: var(--danger); font-weight: 700; }
+    .naoe-box.sim ul li::before { content: '✓'; color: var(--success); font-weight: 700; }
+
+    /* ── METODOLOGIA ── */
+    .metodologia-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 48px;
+      position: relative;
+    }
+    .metodologia-steps::before {
+      content: '';
+      position: absolute;
+      left: 23px;
+      top: 24px;
+      bottom: 24px;
+      width: 1px;
+      background: rgba(245,166,35,0.2);
+    }
+    .step {
+      display: flex;
+      gap: 24px;
+      padding: 28px 0;
+    }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      background: var(--gray-800);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--accent);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .step-content { padding-top: 6px; }
+    .step-content h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-content p {
+      font-size: 15px;
+      color: var(--gray-400);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+    .step-tag {
+      display: inline-block;
+      background: rgba(245,166,35,0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+    }
+
+    /* ── SOBRE ── */
+    .sobre-box {
+      background: var(--gray-800);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-top: 48px;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    @media (max-width: 640px) { .sobre-box { flex-direction: column; gap: 24px; } }
+    .sobre-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--black);
+      flex-shrink: 0;
+    }
+    .sobre-info h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .sobre-info .role { font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 16px; }
+    .sobre-info p { font-size: 15px; color: var(--gray-400); line-height: 1.7; }
+    .sobre-ref {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: rgba(245,166,35,0.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+    .sobre-ref p {
+      font-size: 14px;
+      color: var(--gray-200);
+      font-style: italic;
+    }
+    .sobre-ref .ref-label {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      font-style: normal;
+    }
+
+    /* ── INVESTIMENTO ── */
+    #investimento { background: var(--black); }
+    .invest-wrap {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 720px) { .invest-wrap { grid-template-columns: 1fr; } }
+    .invest-anchor {
+      background: var(--gray-900);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .invest-anchor .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+    .invest-anchor .value-risked {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--gray-700);
+      text-decoration: line-through;
+      letter-spacing: -1px;
+    }
+    .invest-anchor .value-note {
+      font-size: 13px;
+      color: var(--gray-400);
+      margin-top: 8px;
+    }
+    .invest-main {
+      background: linear-gradient(135deg, rgba(245,166,35,0.12), rgba(245,166,35,0.04));
+      border: 2px solid rgba(245,166,35,0.4);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .invest-main::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(245,166,35,0.15), transparent 70%);
+      pointer-events: none;
+    }
+    .invest-badge {
+      background: var(--accent);
+      color: var(--black);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .invest-main .label {
+      font-size: 13px;
+      color: var(--gray-400);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .invest-value {
+      font-size: clamp(40px, 8vw, 56px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .invest-value span { color: var(--accent); }
+    .invest-parcel {
+      font-size: 14px;
+      color: var(--gray-400);
+      margin-bottom: 24px;
+    }
+    .invest-includes {
+      list-style: none;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .invest-includes li {
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .invest-includes li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA ── */
+    #cta {
+      background: linear-gradient(135deg, var(--gray-900), var(--dark));
+      text-align: center;
+    }
+    .cta-content { max-width: 600px; margin: 0 auto; }
+    .cta-content .section-title { margin-bottom: 20px; }
+    .cta-content .section-sub { margin: 0 auto 40px; text-align: center; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-whatsapp {
+      background: #25D366;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 18px 36px;
+      border-radius: 100px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-whatsapp:hover { background: #1db954; transform: translateY(-2px); }
+    .cta-note {
+      margin-top: 28px;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+    footer p { font-size: 13px; color: var(--gray-400); }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      section { padding: 72px 0; }
+      .hero-meta { gap: 24px; }
+      .hero-divider { display: none; }
+      .metodologia-steps::before { left: 19px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">EPIC<span>.</span></div>
+  <a href="#cta" class="nav-cta">Falar com Henrique</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-content">
+    <div class="hero-eyebrow">Proposta Exclusiva · EPIC × Mentores</div>
+    <h1 class="hero-title">
+      Seu time comercial<br>
+      precisa de <em>estratégia,</em><br>
+      não de script.
+    </h1>
+    <p class="hero-desc">
+      Uma intervenção personalizada para elevar a maturidade comercial do time da EPIC —
+      com foco em governança prática, posicionamento claro e rentabilidade real.
+    </p>
+    <div class="hero-actions">
+      <a href="#investimento" class="btn-primary">Ver proposta completa</a>
+      <a href="#metodologia" class="btn-ghost">Como funciona →</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="value">1 dia</div>
+        <div class="label">Workshop presencial</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-meta-item">
+        <div class="value">5 eixos</div>
+        <div class="label">de transformação</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-meta-item">
+        <div class="value">100%</div>
+        <div class="label">personalizado para a EPIC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- URGÊNCIA -->
+<section id="contexto">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Por que agora?</div>
+      <h2 class="section-title">O problema não é técnico.<br>É sistêmico.</h2>
+      <p class="section-sub">Times operacionais que executam sem visão comercial deixam dinheiro na mesa todos os dias. Não por má vontade — por falta de estrutura.</p>
+    </div>
+    <div class="urgencia-grid reveal">
+      <div class="urgencia-item">
+        <div class="urgencia-icon">📉</div>
+        <h3>Escopo que não se expande</h3>
+        <p>O cliente pede, o time entrega — e para por aí. Nenhuma pergunta, nenhuma oportunidade identificada.</p>
+      </div>
+      <div class="urgencia-item">
+        <div class="urgencia-icon">🔀</div>
+        <h3>Posicionamento inconsistente</h3>
+        <p>Diretoria vende de um jeito, time operacional fala de outro. O cliente fica confuso e a negociação vira preço.</p>
+      </div>
+      <div class="urgencia-item">
+        <div class="urgencia-icon">⚠️</div>
+        <h3>Problemas que sobem para a diretoria</h3>
+        <p>Sem padrão e sem processo, os problemas operacionais drenam o tempo e a energia de quem deveria estar focado em crescer.</p>
+      </div>
+      <div class="urgencia-item">
+        <div class="urgencia-icon">💸</div>
+        <h3>Margem sendo destruída</h3>
+        <p>Desconto vira padrão, prazo de pagamento alonga e o trabalho que deveria ser lucrativo passa a não compensar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 EIXOS -->
+<section id="eixos">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Diagnóstico</div>
+      <h2 class="section-title">Os 5 eixos que vamos<br>trabalhar juntos</h2>
+      <p class="section-sub">Cada eixo endereça uma camada real do problema — nada genérico, nada motivacional.</p>
+    </div>
+    <div class="eixos-grid">
+      <div class="eixo-card reveal">
+        <div class="eixo-num">Eixo 01</div>
+        <h3>Cultura Comercial</h3>
+        <ul>
+          <li>Mentalidade de expansão no operacional</li>
+          <li>Diferença entre vender e empurrar</li>
+          <li>Perguntas que geram oportunidade</li>
+        </ul>
+      </div>
+      <div class="eixo-card reveal">
+        <div class="eixo-num">Eixo 02</div>
+        <h3>Posicionamento e Narrativa</h3>
+        <ul>
+          <li>Alinhamento entre discurso e prática</li>
+          <li>Identidade clara da empresa</li>
+          <li>Como comunicar valor sem negociar preço</li>
+        </ul>
+      </div>
+      <div class="eixo-card reveal">
+        <div class="eixo-num">Eixo 03</div>
+        <h3>Governança e Processo</h3>
+        <ul>
+          <li>Registro e padronização mínimos viáveis</li>
+          <li>Critérios claros de escopo</li>
+          <li>Qualificação de demanda</li>
+        </ul>
+      </div>
+      <div class="eixo-card reveal">
+        <div class="eixo-num">Eixo 04</div>
+        <h3>Experiência do Cliente</h3>
+        <ul>
+          <li>Visão de jornada completa</li>
+          <li>Antecipação de problemas</li>
+          <li>Atendimento proativo, não reativo</li>
+        </ul>
+      </div>
+      <div class="eixo-card reveal" style="grid-column: span 1;">
+        <div class="eixo-num">Eixo 05</div>
+        <h3>Performance e Rentabilidade</h3>
+        <ul>
+          <li>Como defender preço com confiança</li>
+          <li>Prazo de pagamento e margem</li>
+          <li>Trabalho que compensa financeiramente</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NÃO É / É -->
+<section id="diferenciais">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Nossa abordagem</div>
+      <h2 class="section-title">Diferente de tudo<br>que você já viu</h2>
+      <p class="section-sub">Não é mais um treinamento de vendas. É um trabalho cirúrgico no sistema da sua empresa.</p>
+    </div>
+    <div class="naoe-grid reveal">
+      <div class="naoe-box nao">
+        <h3>Não é</h3>
+        <ul>
+          <li>Curso genérico de vendas</li>
+          <li>Treinamento motivacional</li>
+          <li>Técnicas agressivas de fechamento</li>
+          <li>Script forçado e artificial</li>
+          <li>Programa longo e caro sem resultado</li>
+          <li>Pressão para bater meta a qualquer custo</li>
+        </ul>
+      </div>
+      <div class="naoe-box sim">
+        <h3>É</h3>
+        <ul>
+          <li>Trabalho 100% personalizado para a EPIC</li>
+          <li>Estratégia prática com ferramentas simples</li>
+          <li>Ajuste de cultura e posicionamento</li>
+          <li>Comercial sutil, natural e eficaz</li>
+          <li>Resultado visível em curto prazo</li>
+          <li>Cliente percebendo valor, não sentindo pressão</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGIA -->
+<section id="metodologia">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Metodologia</div>
+      <h2 class="section-title">Como o projeto<br>acontece na prática</h2>
+      <p class="section-sub">3 etapas claras, com entregável concreto ao final de cada uma.</p>
+    </div>
+    <div class="metodologia-steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-tag">Pré-workshop · 1 semana antes</div>
+          <h3>Diagnóstico Personalizado</h3>
+          <p>Entrevistas com o time e análise do contexto atual da EPIC. Mapeamento dos 5 eixos de dor específicos da empresa. Sem isso, o workshop seria genérico — e genérico não muda nada.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-tag">Workshop · 1 dia presencial</div>
+          <h3>Intervenção em Grupo</h3>
+          <p>Um dia focado, com o time + diretoria, trabalhando os 5 eixos com dinâmicas práticas, casos reais da EPIC e ferramentas aplicáveis imediatamente. Sem PowerPoint motivacional — com exercícios reais.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-tag">Pós-workshop · Semana seguinte</div>
+          <h3>Plano de Ação Entregável</h3>
+          <p>Documento com os principais ajustes definidos durante o workshop, prioridades de implementação e checklist de governança comercial mínima viável para a EPIC sair aplicando.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Quem executa</div>
+      <h2 class="section-title">Henrique<br>Mentores</h2>
+      <p class="section-sub">Especialista em maturidade comercial e cultura de atendimento para empresas de serviço.</p>
+    </div>
+    <div class="sobre-box reveal">
+      <div class="sobre-avatar">H</div>
+      <div class="sobre-info">
+        <h3>Henrique</h3>
+        <div class="role">Fundador · Mentores | Consultor Sênior</div>
+        <p>
+          Trabalho com empresas de serviço que precisam estruturar a inteligência comercial do time operacional.
+          Minha abordagem é personalizada, prática e orientada a resultado — não a teoria.
+          Taxa de trabalho: R$&nbsp;1.850/hora.
+        </p>
+        <div class="sobre-ref">
+          <div class="ref-label">Referência de projeto similar</div>
+          <p>"Projeto Bergerson — Workshop de 1 dia com time de diretores, foco em planejamento 2026 e estruturação cultural. Conduzido integralmente, sem apoio. Resultado: clareza estratégica e plano de ação implementado."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTIMENTO -->
+<section id="investimento">
+  <div class="container">
+    <div class="reveal">
+      <div class="tag">Investimento</div>
+      <h2 class="section-title">Um projeto com retorno<br>desde o primeiro mês</h2>
+      <p class="section-sub">Se o time parar de dar um desconto a mais por projeto, o investimento se paga no primeiro mês.</p>
+    </div>
+    <div class="invest-wrap reveal">
+      <div class="invest-anchor">
+        <div class="label">Valor de referência de mercado</div>
+        <div class="value-risked">R$&nbsp;24.000</div>
+        <div class="value-note">
+          Baseado em 18h de trabalho técnico<br>
+          (diagnóstico + workshop + entregável)<br>
+          × R$&nbsp;1.850/hora
+        </div>
+      </div>
+      <div class="invest-main">
+        <div class="invest-badge">Proposta EPIC</div>
+        <div class="label">Investimento total no projeto</div>
+        <div class="invest-value">R$&nbsp;<span>18.000</span></div>
+        <div class="invest-parcel">ou 2× de R$&nbsp;9.000 (50% no início · 50% no final)</div>
+        <ul class="invest-includes">
+          <li>Diagnóstico personalizado pré-workshop</li>
+          <li>Workshop presencial de 1 dia completo</li>
+          <li>Material exclusivo desenvolvido para a EPIC</li>
+          <li>Plano de ação entregável pós-workshop</li>
+          <li>Suporte por 30 dias após a intervenção</li>
+          <li>Conduzido integralmente por Henrique</li>
+        </ul>
+        <a href="#cta" class="btn-primary" style="width:100%; text-align:center;">Quero avançar com esse projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-content reveal">
+      <div class="tag">Próximos passos</div>
+      <h2 class="section-title">Pronto para estruturar<br>o comercial da EPIC?</h2>
+      <p class="section-sub">O próximo passo é simples: uma conversa de 30 minutos para alinhar escopo, datas e condições. Sem compromisso.</p>
+      <div class="cta-actions">
+        <a href="https://wa.me/5511999999999?text=Ol%C3%A1%20Henrique%2C%20vi%20a%20proposta%20da%20EPIC%20e%20quero%20conversar!" class="btn-whatsapp" target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Falar com Henrique
+        </a>
+      </div>
+      <p class="cta-note">Proposta válida por 15 dias · Agenda limitada</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Proposta elaborada por <strong>Henrique · Mentores</strong> para <a href="https://www.epicwork.shop" target="_blank">EPIC</a> · Confidencial</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

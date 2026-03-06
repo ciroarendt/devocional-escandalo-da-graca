@@ -1,0 +1,1573 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "description": "Retorna os dados do consultor baseado no token JWT fornecido",
+        "operationId": "UsersController_getConsultantData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Dados do consultor encontrados"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          },
+          "404": {
+            "description": "Consultor n\u00e3o encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar dados do consultor",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/update": {
+      "put": {
+        "description": "O cd_comissionado \u00e9 extra\u00eddo automaticamente do token JWT. Dados do usu\u00e1rio s\u00e3o atualizados ou criados se n\u00e3o existir.",
+        "operationId": "UsersController_updateUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usu\u00e1rio atualizado/criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inv\u00e1lidos"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar ou criar usu\u00e1rio autenticado (upsert)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/upload-photo": {
+      "post": {
+        "description": "Faz upload da foto para AWS S3 e atualiza a URL no perfil do usu\u00e1rio. O cd_comissionado \u00e9 extra\u00eddo do token JWT.",
+        "operationId": "UsersController_uploadPhoto",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Arquivo de imagem (JPG, PNG, GIF, WebP - m\u00e1x 5MB)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Foto atualizada com sucesso"
+          },
+          "400": {
+            "description": "Arquivo inv\u00e1lido"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload de foto do usu\u00e1rio",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/photo": {
+      "get": {
+        "description": "Faz o download da foto privada armazenada na S3 (via role da aplica\u00e7\u00e3o).",
+        "operationId": "UsersController_getPhoto",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Arquivo retornado"
+          },
+          "400": {
+            "description": "Par\u00e2metros inv\u00e1lidos"
+          }
+        },
+        "summary": "Baixar foto de usu\u00e1rio (proxy S3)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "Retorna os dados do usu\u00e1rio baseado no token JWT fornecido",
+        "operationId": "UsersController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Usu\u00e1rio encontrado"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          },
+          "404": {
+            "description": "Usu\u00e1rio n\u00e3o encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar dados do usu\u00e1rio autenticado",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/users/{id}/{nome}": {
+      "get": {
+        "description": "Busca um usu\u00e1rio pelo path no formato /:id/:nome",
+        "operationId": "UsersController_findByPath",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID num\u00e9rico de 6 d\u00edgitos do usu\u00e1rio",
+            "schema": {
+              "example": "123456",
+              "type": "string"
+            }
+          },
+          {
+            "name": "nome",
+            "required": true,
+            "in": "path",
+            "description": "Nome normalizado do usu\u00e1rio",
+            "schema": {
+              "example": "joao-silva",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usu\u00e1rio encontrado"
+          },
+          "404": {
+            "description": "Usu\u00e1rio n\u00e3o encontrado"
+          }
+        },
+        "summary": "Buscar usu\u00e1rio pelo path p\u00fablico",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/stores": {
+      "get": {
+        "description": "Retorna uma lista paginada de lojas com filtros opcionais",
+        "operationId": "StoresController_getStores",
+        "parameters": [
+          {
+            "name": "pg",
+            "required": false,
+            "in": "query",
+            "description": "N\u00famero da p\u00e1gina",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "itensPerPage",
+            "required": false,
+            "in": "query",
+            "description": "Itens por p\u00e1gina",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "nome",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por nome",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "url",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por URL",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endereco",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por endere\u00e7o",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "telefone",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por telefone",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "whatsapp",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por WhatsApp",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Active",
+                "Inactive"
+              ]
+            }
+          },
+          {
+            "name": "imagem",
+            "required": false,
+            "in": "query",
+            "description": "Filtro por imagem",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de lojas retornada com sucesso"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar lojas com pagina\u00e7\u00e3o",
+        "tags": [
+          "stores"
+        ]
+      },
+      "post": {
+        "description": "Cria uma nova loja. Falha se j\u00e1 existir loja com o mesmo nome (use upsert para atualizar).",
+        "operationId": "StoresController_createStore",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertStoreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Loja criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inv\u00e1lidos ou loja j\u00e1 existe com esse nome"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar loja",
+        "tags": [
+          "stores"
+        ]
+      }
+    },
+    "/stores/{id}": {
+      "delete": {
+        "description": "Deletar loja",
+        "operationId": "StoresController_deleteStore",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Loja deletada com sucesso"
+          },
+          "400": {
+            "description": "ID n\u00e3o informado"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          },
+          "404": {
+            "description": "Loja n\u00e3o encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deletar loja",
+        "tags": [
+          "stores"
+        ]
+      },
+      "get": {
+        "description": "Retorna uma loja pelo ID (MongoDB ObjectId)",
+        "operationId": "StoresController_getStoreById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da loja (ObjectId)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Loja encontrada com sucesso"
+          },
+          "400": {
+            "description": "ID inv\u00e1lido"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          },
+          "404": {
+            "description": "Loja n\u00e3o encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar loja por ID",
+        "tags": [
+          "stores"
+        ]
+      },
+      "put": {
+        "description": "Atualiza uma loja pelo ID (MongoDB ObjectId). Envie apenas os campos que deseja alterar.",
+        "operationId": "StoresController_updateStoreById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da loja (ObjectId)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Loja atualizada com sucesso"
+          },
+          "400": {
+            "description": "ID inv\u00e1lido ou dados inv\u00e1lidos"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          },
+          "404": {
+            "description": "Loja n\u00e3o encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar loja por ID",
+        "tags": [
+          "stores"
+        ]
+      }
+    },
+    "/stores/upsert": {
+      "post": {
+        "description": "Upsert de loja",
+        "operationId": "StoresController_upsertStore",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertStoreDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Loja Atualizada/Criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inv\u00e1lidos"
+          },
+          "401": {
+            "description": "Token inv\u00e1lido ou n\u00e3o fornecido"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upsert de loja",
+        "tags": [
+          "stores"
+        ]
+      }
+    },
+    "/stores/unit": {
+      "get": {
+        "description": "Busca uma unidade por URL",
+        "operationId": "StoresController_findByUrl",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unidade encontrada com sucesso"
+          },
+          "404": {
+            "description": "Unidade n\u00e3o encontrada"
+          }
+        },
+        "summary": "Buscar unidade por URL",
+        "tags": [
+          "stores"
+        ]
+      }
+    },
+    "/candidates": {
+      "post": {
+        "description": "Cria um novo candidato no sistema com upload de curr\u00edculo",
+        "operationId": "CandidatesController_createCandidate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome do candidato"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Email do candidato"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Telefone do candidato"
+                  },
+                  "storeEmail": {
+                    "type": "string",
+                    "description": "Email da loja"
+                  },
+                  "resume": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Arquivo PDF do curr\u00edculo"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "phone",
+                  "resume"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Candidato criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inv\u00e1lidos ou arquivo n\u00e3o fornecido"
+          }
+        },
+        "summary": "Criar candidato",
+        "tags": [
+          "candidates"
+        ]
+      }
+    },
+    "/candidates/resume": {
+      "get": {
+        "description": "Faz o download do curr\u00edculo privado armazenado na S3 (via role da aplica\u00e7\u00e3o).",
+        "operationId": "CandidatesController_downloadResume",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Arquivo retornado"
+          },
+          "400": {
+            "description": "Par\u00e2metros inv\u00e1lidos"
+          }
+        },
+        "summary": "Baixar curr\u00edculo (proxy S3)",
+        "tags": [
+          "candidates"
+        ]
+      }
+    },
+    "/register": {
+      "post": {
+        "description": "Recebe os dados do cadastro (PF ou PJ) e cria um novo registro.",
+        "operationId": "RegisterController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cadastro realizado com sucesso"
+          },
+          "400": {
+            "description": "Dados inv\u00e1lidos"
+          }
+        },
+        "summary": "Cadastro",
+        "tags": [
+          "register"
+        ]
+      }
+    },
+    "/wallets": {
+      "get": {
+        "operationId": "WalletsController_getWallets",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "description": "P\u00e1gina",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "Quantidade de itens por p\u00e1gina",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Nome do cliente",
+            "schema": {
+              "example": "Bryan",
+              "type": "string"
+            }
+          },
+          {
+            "name": "quotasIds",
+            "required": false,
+            "in": "query",
+            "description": "IDs das quotas",
+            "schema": {
+              "example": "1,2,3",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    },
+    "/wallets/bids/config": {
+      "get": {
+        "operationId": "WalletsController_bidsConfig",
+        "parameters": [
+          {
+            "name": "groups",
+            "required": true,
+            "in": "query",
+            "description": "ID do grupo",
+            "schema": {
+              "example": "1,2,3",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    },
+    "/wallets/lottery/draw-dates": {
+      "get": {
+        "operationId": "WalletsController_lotteryDrawDates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    },
+    "/wallets/lottery/results-by-draw-date": {
+      "get": {
+        "operationId": "WalletsController_lotteryResultsByDrawDate",
+        "parameters": [
+          {
+            "name": "drawDate",
+            "required": true,
+            "in": "query",
+            "description": "Data do sorteio",
+            "schema": {
+              "example": "2026-01-20",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    },
+    "/wallets/lottery/extraction": {
+      "get": {
+        "operationId": "WalletsController_lotteryExtraction",
+        "parameters": [
+          {
+            "name": "drawDate",
+            "required": true,
+            "in": "query",
+            "description": "Data do sorteio",
+            "schema": {
+              "example": "2026-01-17",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "description": "Tipo de extra\u00e7\u00e3o",
+            "schema": {
+              "example": "properties",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    },
+    "/wallets/analysis": {
+      "get": {
+        "operationId": "WalletsController_walletAnalysis",
+        "parameters": [
+          {
+            "name": "drawDate",
+            "required": true,
+            "in": "query",
+            "description": "Data do sorteio",
+            "schema": {
+              "example": "2026-01-17",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "description": "Tipo de extra\u00e7\u00e3o",
+            "schema": {
+              "example": "properties",
+              "type": "string"
+            }
+          },
+          {
+            "name": "minRange",
+            "required": false,
+            "in": "query",
+            "description": "Valor m\u00ednimo",
+            "schema": {
+              "example": "-20",
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxRange",
+            "required": false,
+            "in": "query",
+            "description": "Valor m\u00e1ximo",
+            "schema": {
+              "example": "20",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "jwt-avapro": []
+          }
+        ],
+        "tags": [
+          "Wallets"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API Connector Proseg",
+    "description": "Documenta\u00e7\u00e3o da API com Swagger",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "jwt-avapro": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RedesSociaisDto": {
+        "type": "object",
+        "properties": {
+          "instagram": {
+            "type": "string",
+            "description": "Instagram username ou URL"
+          },
+          "facebook": {
+            "type": "string",
+            "description": "Facebook username ou URL"
+          },
+          "linkedin": {
+            "type": "string",
+            "description": "LinkedIn username ou URL"
+          }
+        }
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome do usu\u00e1rio"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "endereco": {
+            "type": "string",
+            "description": "Endere\u00e7o completo"
+          },
+          "cod_body": {
+            "type": "object",
+            "description": "C\u00f3digo body"
+          },
+          "cod_head": {
+            "type": "object",
+            "description": "C\u00f3digo head"
+          },
+          "foto_url": {
+            "type": "string",
+            "description": "URL da foto do usu\u00e1rio"
+          },
+          "unit": {
+            "type": "object",
+            "description": "Unidade do usu\u00e1rio"
+          },
+          "unitCategory": {
+            "type": "object",
+            "description": "Categoria da unidade do usu\u00e1rio"
+          },
+          "pca10": {
+            "type": "boolean",
+            "description": "PCA10",
+            "default": false
+          },
+          "isActivePage": {
+            "type": "boolean",
+            "description": "P\u00e1gina do consultor ativa?",
+            "default": true
+          },
+          "redes_sociais": {
+            "description": "Redes sociais do usu\u00e1rio",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RedesSociaisDto"
+              }
+            ]
+          }
+        }
+      },
+      "UpsertStoreDto": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome da loja"
+          },
+          "bu": {
+            "type": "string",
+            "description": "BU da loja"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade da loja"
+          },
+          "cod_body": {
+            "type": "string",
+            "description": "C\u00f3digo do body da loja"
+          },
+          "cod_head": {
+            "type": "string",
+            "description": "C\u00f3digo do head da loja"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email da loja"
+          },
+          "endereco_descricao": {
+            "type": "string",
+            "description": "Endere\u00e7o da loja"
+          },
+          "endereco_mapa": {
+            "type": "string",
+            "description": "Endere\u00e7o do mapa da loja"
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado da loja"
+          },
+          "imagem": {
+            "type": "string",
+            "description": "Imagem da loja"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da loja",
+            "enum": [
+              "Active",
+              "Inactive"
+            ]
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone da loja"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp da loja"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL da loja"
+          }
+        },
+        "required": [
+          "nome",
+          "bu",
+          "cidade",
+          "cod_body",
+          "cod_head",
+          "email",
+          "endereco_descricao",
+          "endereco_mapa",
+          "estado",
+          "imagem",
+          "status",
+          "telefone",
+          "whatsapp",
+          "url"
+        ]
+      },
+      "UpdateStoreDto": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "Nome da loja"
+          },
+          "bu": {
+            "type": "string",
+            "description": "BU da loja"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade da loja"
+          },
+          "cod_body": {
+            "type": "string",
+            "description": "C\u00f3digo do body da loja"
+          },
+          "cod_head": {
+            "type": "string",
+            "description": "C\u00f3digo do head da loja"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email da loja"
+          },
+          "endereco_descricao": {
+            "type": "string",
+            "description": "Endere\u00e7o da loja"
+          },
+          "endereco_mapa": {
+            "type": "string",
+            "description": "Endere\u00e7o do mapa da loja"
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado da loja"
+          },
+          "imagem": {
+            "type": "string",
+            "description": "Imagem da loja"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da loja",
+            "enum": [
+              "Active",
+              "Inactive"
+            ]
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone da loja"
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp da loja"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL da loja"
+          }
+        }
+      },
+      "DadosFinanceirosDto": {
+        "type": "object",
+        "properties": {
+          "renda_mensal": {
+            "type": "string",
+            "description": "Renda mensal"
+          }
+        },
+        "required": [
+          "renda_mensal"
+        ]
+      },
+      "EnderecoDto": {
+        "type": "object",
+        "properties": {
+          "logradouro": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
+          },
+          "pais": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "uf": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "logradouro",
+          "numero",
+          "complemento",
+          "pais",
+          "bairro",
+          "cidade",
+          "uf",
+          "cep"
+        ]
+      },
+      "RgDto": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "string"
+          },
+          "emissor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "numero",
+          "emissor"
+        ]
+      },
+      "PjDto": {
+        "type": "object",
+        "properties": {
+          "razao_social": {
+            "type": "string"
+          },
+          "cpf_socio": {
+            "type": "string"
+          },
+          "nome_fantasia": {
+            "type": "string"
+          },
+          "inscricao_estadual": {
+            "type": "string"
+          },
+          "inscricao_municipal": {
+            "type": "string"
+          },
+          "renda_mensal": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string"
+          },
+          "logradouro": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
+          },
+          "pais": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "uf": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "razao_social",
+          "cpf_socio",
+          "nome_fantasia",
+          "inscricao_estadual",
+          "inscricao_municipal",
+          "renda_mensal",
+          "email",
+          "telefone",
+          "logradouro",
+          "numero",
+          "complemento",
+          "pais",
+          "bairro",
+          "cidade",
+          "uf",
+          "cep"
+        ]
+      },
+      "RegisterDataDto": {
+        "type": "object",
+        "properties": {
+          "estado_civil": {
+            "type": "string",
+            "description": "Estado civil"
+          },
+          "nascimento": {
+            "type": "string",
+            "description": "Data de nascimento"
+          },
+          "naturalidade": {
+            "type": "string",
+            "description": "Naturalidade"
+          },
+          "nome_da_mae": {
+            "type": "string",
+            "description": "Nome da m\u00e3e"
+          },
+          "nascionalidade": {
+            "type": "string",
+            "description": "Nacionalidade"
+          },
+          "profissao": {
+            "type": "string",
+            "description": "Profiss\u00e3o"
+          },
+          "dados_financeiros": {
+            "description": "Dados financeiros",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DadosFinanceirosDto"
+              }
+            ]
+          },
+          "endereco": {
+            "description": "Endere\u00e7o",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EnderecoDto"
+              }
+            ]
+          },
+          "rg": {
+            "description": "RG",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RgDto"
+              }
+            ]
+          },
+          "pj": {
+            "description": "Dados PJ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PjDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "estado_civil",
+          "nascimento",
+          "naturalidade",
+          "nome_da_mae",
+          "nascionalidade",
+          "profissao",
+          "dados_financeiros",
+          "endereco",
+          "rg",
+          "pj"
+        ]
+      },
+      "CreateRegisterDto": {
+        "type": "object",
+        "properties": {
+          "cdComissionado": {
+            "type": "string",
+            "description": "CD Comissionado"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Celular"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo de pessoa",
+            "enum": [
+              "pf",
+              "pj"
+            ]
+          },
+          "cpf_cnpj": {
+            "type": "string",
+            "description": "CPF ou CNPJ"
+          },
+          "data": {
+            "description": "Dados adicionais",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterDataDto"
+              }
+            ]
+          },
+          "mensagem": {
+            "type": "string",
+            "description": "Mensagem"
+          }
+        },
+        "required": [
+          "cdComissionado",
+          "nome",
+          "email",
+          "celular",
+          "type",
+          "cpf_cnpj",
+          "data",
+          "mensagem"
+        ]
+      }
+    }
+  }
+}

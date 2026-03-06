@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lei do Bem — Dashboard de Lotes | MCTI</title>
+    <style>
+/* ── Reset & Base ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --blue:#1351B4; --blue-w:#155BCB; --blue-l:#C5D4EB; --blue-bg:#EDF2FA;
+    --green:#168821; --green-l:#E4F5E7; --red:#E52207; --orange:#E66300;
+    --g9:#111827; --g8:#1F2937; --g7:#374151; --g6:#4B5563; --g5:#6B7280;
+    --g4:#9CA3AF; --g3:#D1D5DB; --g2:#E5E7EB; --g1:#F3F4F6; --g0:#F9FAFB;
+    --w:#FFF;
+    --sh:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+    --sh-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+    --sh-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+    --r:8px; --rl:12px;
+}
+html { font-size:16px; scroll-behavior:smooth; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; background:var(--g0); color:var(--g8); line-height:1.6; min-height:100vh; }
+a { color:var(--blue); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* ── Header ── */
+.header { background:linear-gradient(135deg,var(--blue) 0%,#0C326F 100%); color:var(--w); padding:0 2rem; box-shadow:var(--sh-md); position:sticky; top:0; z-index:100; }
+.header-content { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:1rem 0; gap:1rem; }
+.header-left .logo { display:flex; align-items:center; gap:.75rem; }
+.header-left h1 { font-size:1.25rem; font-weight:700; letter-spacing:-.02em; }
+.header-left .subtitle { font-size:.8rem; opacity:.8; }
+.header-right { display:flex; align-items:center; gap:1rem; }
+.scraped-at { font-size:.75rem; opacity:.7; }
+
+/* ── Buttons ── */
+.btn { display:inline-flex; align-items:center; gap:.4rem; padding:.5rem 1rem; border-radius:var(--r); font-size:.85rem; font-weight:600; cursor:pointer; border:none; transition:all .2s; background:var(--blue); color:var(--w); }
+.btn:hover { background:var(--blue-w); transform:translateY(-1px); box-shadow:var(--sh-md); }
+.btn-outline { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:var(--w); }
+.btn-outline:hover { background:rgba(255,255,255,.25); }
+.btn-sm { padding:.4rem .75rem; font-size:.8rem; }
+.btn-download { background:var(--green); color:var(--w); padding:.35rem .75rem; font-size:.78rem; border-radius:6px; text-decoration:none; }
+.btn-download:hover { background:#11691a; text-decoration:none; }
+
+/* ── Stats ── */
+.stats-section { max-width:1400px; margin:1.5rem auto 0; padding:0 2rem; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+.stat-card { background:var(--w); border-radius:var(--rl); padding:1.25rem; display:flex; align-items:center; gap:1rem; box-shadow:var(--sh); border-left:4px solid var(--blue); transition:transform .2s,box-shadow .2s; animation:fadeInUp .5s ease-out both; }
+.stat-card:hover { transform:translateY(-2px); box-shadow:var(--sh-md); }
+.stat-card:nth-child(1) { animation-delay:.05s; }
+.stat-card:nth-child(2) { animation-delay:.1s; border-left-color:var(--red); }
+.stat-card:nth-child(3) { animation-delay:.15s; border-left-color:var(--orange); }
+.stat-card:nth-child(4) { animation-delay:.2s; border-left-color:var(--green); }
+.stat-icon { width:48px; height:48px; border-radius:var(--r); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.stat-total .stat-icon { background:var(--blue-bg); color:var(--blue); }
+.stat-pdf .stat-icon { background:#FDE8E4; color:var(--red); }
+.stat-zip .stat-icon { background:#FFF0E0; color:var(--orange); }
+.stat-years .stat-icon { background:var(--green-l); color:var(--green); }
+.stat-number { display:block; font-size:1.75rem; font-weight:800; line-height:1.1; color:var(--g9); }
+.stat-label { font-size:.8rem; color:var(--g5); font-weight:500; }
+
+/* ── Filters ── */
+.filters-section { max-width:1400px; margin:1.5rem auto 0; padding:0 2rem; }
+.filters-bar { background:var(--w); border-radius:var(--rl); padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem; box-shadow:var(--sh); flex-wrap:wrap; }
+.search-box { display:flex; align-items:center; gap:.5rem; background:var(--g0); border:1px solid var(--g2); border-radius:var(--r); padding:.5rem .75rem; flex:1; min-width:200px; color:var(--g4); transition:border-color .2s; }
+.search-box:focus-within { border-color:var(--blue); box-shadow:0 0 0 3px rgba(19,81,180,.1); }
+.search-box input { border:none; outline:none; background:none; font-size:.9rem; width:100%; color:var(--g8); }
+.filter-group { display:flex; align-items:center; gap:.4rem; }
+.filter-group label { font-size:.8rem; font-weight:600; color:var(--g6); white-space:nowrap; }
+.filter-group select { padding:.45rem .6rem; border-radius:var(--r); border:1px solid var(--g2); background:var(--g0); font-size:.85rem; color:var(--g7); cursor:pointer; outline:none; }
+.filter-group select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(19,81,180,.1); }
+.filter-results { font-size:.8rem; color:var(--g5); font-weight:500; white-space:nowrap; }
+
+/* ── Chart ── */
+.chart-section { max-width:1400px; margin:1.5rem auto 0; padding:0 2rem; }
+.chart-section h2 { font-size:1rem; font-weight:700; color:var(--g8); margin-bottom:.75rem; }
+.chart-container { background:var(--w); border-radius:var(--rl); padding:1.25rem 1.25rem .75rem; box-shadow:var(--sh); display:flex; align-items:flex-end; gap:.5rem; height:200px; overflow-x:auto; }
+.chart-bar-group { display:flex; flex-direction:column; align-items:center; gap:.3rem; flex:1; min-width:55px; cursor:pointer; }
+.chart-bar { width:100%; max-width:44px; background:linear-gradient(180deg,var(--blue) 0%,var(--blue-w) 100%); border-radius:6px 6px 0 0; transition:all .4s cubic-bezier(.34,1.56,.64,1); min-height:4px; }
+.chart-bar:hover { background:linear-gradient(180deg,var(--blue-w) 0%,#0C326F 100%); transform:scaleY(1.05); }
+.chart-bar-value { font-size:.72rem; font-weight:700; color:var(--g7); }
+.chart-bar-label { font-size:.72rem; color:var(--g5); font-weight:600; }
+
+/* ── Table ── */
+.table-section { max-width:1400px; margin:1.5rem auto 0; padding:0 2rem; }
+.table-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
+.table-header h2 { font-size:1rem; font-weight:700; color:var(--g8); }
+.table-wrapper { background:var(--w); border-radius:var(--rl); box-shadow:var(--sh); overflow:hidden; }
+table { width:100%; border-collapse:collapse; }
+thead { background:var(--g0); border-bottom:2px solid var(--g2); }
+th { padding:.75rem 1rem; text-align:left; font-size:.75rem; font-weight:700; color:var(--g6); text-transform:uppercase; letter-spacing:.05em; }
+td { padding:.7rem 1rem; font-size:.85rem; border-bottom:1px solid var(--g1); vertical-align:middle; }
+tbody tr { transition:background .15s; }
+tbody tr:hover { background:var(--blue-bg); }
+.col-id { width:45px; text-align:center; color:var(--g4); font-size:.78rem; }
+.col-year { width:75px; }
+.col-type { width:160px; }
+.col-format { width:80px; }
+.col-action { width:100px; text-align:center; }
+
+.year-badge { display:inline-block; padding:.15rem .5rem; border-radius:20px; font-size:.75rem; font-weight:700; background:var(--blue-bg); color:var(--blue); }
+.type-badge { display:inline-block; padding:.15rem .55rem; border-radius:20px; font-size:.72rem; font-weight:600; white-space:nowrap; }
+.type-contestacao { background:#FDE8E4; color:#B71B06; }
+.type-recurso { background:#FFF0E0; color:#B54D00; }
+.type-parecer { background:var(--blue-bg); color:var(--blue); }
+.type-consolidado { background:var(--green-l); color:#0E5814; }
+.type-manual { background:#F3E8FF; color:#6B21A8; }
+.type-retificacao { background:#FEF9C3; color:#854D0E; }
+.type-outro { background:var(--g1); color:var(--g6); }
+
+.format-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.15rem .5rem; border-radius:4px; font-size:.72rem; font-weight:700; letter-spacing:.03em; }
+.format-pdf { background:#FDE8E4; color:var(--red); }
+.format-zip { background:#FFF0E0; color:var(--orange); }
+.format-7z { background:#E8F0FE; color:#1A56DB; }
+
+.doc-name { font-weight:500; color:var(--g8); }
+.doc-filename { font-size:.72rem; color:var(--g4); margin-top:.1rem; word-break:break-all; }
+.legacy-badge { display:inline-block; padding:.1rem .35rem; border-radius:3px; font-size:.65rem; font-weight:600; background:var(--g2); color:var(--g6); margin-left:.4rem; }
+.empty-state { text-align:center; padding:3rem; color:var(--g4); }
+
+/* ── Loading ── */
+.loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; z-index:200; backdrop-filter:blur(4px); transition:opacity .3s; }
+.loading-overlay.hidden { opacity:0; pointer-events:none; }
+.loading-content { text-align:center; }
+.spinner { width:48px; height:48px; border:4px solid var(--blue-l); border-top-color:var(--blue); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 1rem; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-content p { font-size:1.1rem; font-weight:600; color:var(--g8); }
+.loading-sub { font-size:.85rem; color:var(--g5); }
+
+/* ── Error ── */
+.error-banner { max-width:1400px; margin:1.5rem auto 0; padding:0 2rem; }
+.error-banner-inner { background:#FDE8E4; border:1px solid #E52207; border-radius:var(--rl); padding:1rem 1.25rem; color:#B71B06; font-size:.9rem; display:none; }
+.error-banner-inner.show { display:block; }
+
+/* ── Toast ── */
+.toast { position:fixed; bottom:2rem; right:2rem; padding:.75rem 1.25rem; border-radius:var(--r); background:var(--g9); color:var(--w); font-size:.85rem; font-weight:500; box-shadow:var(--sh-lg); opacity:0; transform:translateY(10px); transition:all .3s; z-index:300; pointer-events:none; }
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* ── Footer ── */
+.footer { max-width:1400px; margin:2rem auto; padding:1.5rem 2rem; text-align:center; font-size:.8rem; color:var(--g5); border-top:1px solid var(--g2); }
+.footer a { color:var(--blue); font-weight:600; }
+
+/* ── Animations ── */
+@keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Responsive ── */
+@media(max-width:1024px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:768px) {
+    .header-content { flex-direction:column; align-items:flex-start; gap:.75rem; }
+    .header-right { width:100%; justify-content:space-between; }
+    .stats-grid { grid-template-columns:1fr 1fr; gap:.75rem; }
+    .stat-card { padding:1rem; }
+    .stat-number { font-size:1.4rem; }
+    .filters-bar { flex-direction:column; align-items:stretch; }
+    .search-box { min-width:100%; }
+    .filter-group { width:100%; }
+    .filter-group select { flex:1; }
+    .table-wrapper { overflow-x:auto; }
+    table { min-width:700px; }
+    .chart-container { height:150px; }
+    .stats-section,.filters-section,.chart-section,.table-section { padding:0 1rem; }
+    .header { padding:0 1rem; }
+}
+@media(max-width:480px) { .stats-grid { grid-template-columns:1fr; } .header-left h1 { font-size:1.05rem; } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#1351B4"/><path d="M8 16L14 22L24 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div>
+                        <h1>Lei do Bem — Lotes</h1>
+                        <span class="subtitle">Pareceres Técnicos, Contestações e Recursos — MCTI</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="btn-refresh" class="btn btn-outline" title="Recarregar dados do MCTI">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    Atualizar
+                </button>
+                <span id="scraped-at" class="scraped-at"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Error Banner -->
+    <section class="error-banner">
+        <div id="error-msg" class="error-banner-inner"></div>
+    </section>
+
+    <!-- Stats Cards -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card stat-total">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="stat-total">—</span>
+                    <span class="stat-label">Total de Documentos</span>
+                </div>
+            </div>
+            <div class="stat-card stat-pdf">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="stat-pdf">—</span>
+                    <span class="stat-label">Arquivos PDF</span>
+                </div>
+            </div>
+            <div class="stat-card stat-zip">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="stat-zip">—</span>
+                    <span class="stat-label">Arquivos ZIP/7Z</span>
+                </div>
+            </div>
+            <div class="stat-card stat-years">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="stat-years">—</span>
+                    <span class="stat-label">Anos-Base Cobertos</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+        <div class="filters-bar">
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="search-input" placeholder="Buscar por nome, arquivo ou URL...">
+            </div>
+            <div class="filter-group">
+                <label>Ano-Base:</label>
+                <select id="filter-year"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Tipo:</label>
+                <select id="filter-type"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Formato:</label>
+                <select id="filter-format"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-results"><span id="filter-count"></span></div>
+        </div>
+    </section>
+
+    <!-- Year Chart -->
+    <section class="chart-section">
+        <h2>Documentos por Ano-Base</h2>
+        <div class="chart-container" id="year-chart"></div>
+    </section>
+
+    <!-- Data Table -->
+    <section class="table-section">
+        <div class="table-header">
+            <h2>Documentos Disponíveis</h2>
+            <button id="btn-copy-links" class="btn btn-sm" title="Copiar todos os links filtrados">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar Links
+            </button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-id">#</th>
+                        <th class="col-year">Ano</th>
+                        <th>Documento</th>
+                        <th class="col-type">Tipo</th>
+                        <th class="col-format">Formato</th>
+                        <th class="col-action">Download</th>
+                    </tr>
+                </thead>
+                <tbody id="lotes-tbody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Consultando o site do MCTI...</p>
+            <span class="loading-sub">Extraindo dados dos lotes da Lei do Bem</span>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Dados extraídos de <a href="https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/lei-do-bem/paginas/lotes" target="_blank" rel="noopener">gov.br/mcti — Lei do Bem — Lotes</a></p>
+    </footer>
+
+    <script>
+// Dados embutidos pelo servidor (sem necessidade de chamada AJAX)
+var INITIAL_DATA = {{ initial_data|safe }};
+</script>
+    <script>
+(function() {
+    "use strict";
+
+    var allLotes = [];
+    var filteredLotes = [];
+    var stats = {};
+
+    var els = {
+        loading: document.getElementById("loading-overlay"),
+        statTotal: document.getElementById("stat-total"),
+        statPdf: document.getElementById("stat-pdf"),
+        statZip: document.getElementById("stat-zip"),
+        statYears: document.getElementById("stat-years"),
+        scrapedAt: document.getElementById("scraped-at"),
+        searchInput: document.getElementById("search-input"),
+        filterYear: document.getElementById("filter-year"),
+        filterType: document.getElementById("filter-type"),
+        filterFormat: document.getElementById("filter-format"),
+        filterCount: document.getElementById("filter-count"),
+        yearChart: document.getElementById("year-chart"),
+        tbody: document.getElementById("lotes-tbody"),
+        btnRefresh: document.getElementById("btn-refresh"),
+        btnCopyLinks: document.getElementById("btn-copy-links"),
+        toast: document.getElementById("toast"),
+        errorMsg: document.getElementById("error-msg")
+    };
+
+    function showLoading(show) {
+        if (show) els.loading.classList.remove("hidden");
+        else els.loading.classList.add("hidden");
+    }
+
+    function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add("show");
+        setTimeout(function() { els.toast.classList.remove("show"); }, 3500);
+    }
+
+    function showError(msg) {
+        els.errorMsg.textContent = msg;
+        els.errorMsg.classList.add("show");
+    }
+
+    function hideError() {
+        els.errorMsg.classList.remove("show");
+    }
+
+    function escapeHtml(s) {
+        var d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // ── API (fallback para refresh) ──
+    function fetchLotesViaAPI() {
+        // Tentar múltiplos caminhos para compatibilidade com proxies
+        var paths = ["api/lotes", "/api/lotes", "./api/lotes"];
+        var idx = 0;
+
+        function tryNext() {
+            if (idx >= paths.length) {
+                return Promise.reject(new Error("Nenhum endpoint da API acessível. Recarregue a página."));
+            }
+            var url = paths[idx];
+            idx++;
+            return fetch(url).then(function(r) {
+                if (!r.ok) return tryNext();
+                return r.json();
+            }).catch(function() {
+                return tryNext();
+            });
+        }
+        return tryNext();
+    }
+
+    // ── Stats ──
+    function animateNumber(el, target) {
+        var current = 0;
+        var step = Math.max(Math.ceil(target / 20), 1);
+        var iv = setInterval(function() {
+            current += step;
+            if (current >= target) { current = target; clearInterval(iv); }
+            el.textContent = current;
+        }, 30);
+    }
+
+    function renderStats(s) {
+        animateNumber(els.statTotal, s.total);
+        animateNumber(els.statPdf, s.by_format["PDF"] || 0);
+        animateNumber(els.statZip, (s.by_format["ZIP"] || 0) + (s.by_format["7Z"] || 0));
+        animateNumber(els.statYears, s.years.length);
+    }
+
+    // ── Chart ──
+    function renderChart(s) {
+        var years = s.years.slice().sort();
+        var maxCount = 1;
+        years.forEach(function(y) { var c = s.by_year[y] || 0; if (c > maxCount) maxCount = c; });
+        var maxH = 120;
+
+        var html = "";
+        years.forEach(function(year) {
+            var count = s.by_year[year] || 0;
+            var h = Math.max((count / maxCount) * maxH, 6);
+            html += '<div class="chart-bar-group" data-year="' + year + '">' +
+                '<span class="chart-bar-value">' + count + '</span>' +
+                '<div class="chart-bar" style="height:' + h + 'px" title="' + year + ': ' + count + ' documentos"></div>' +
+                '<span class="chart-bar-label">' + year + '</span></div>';
+        });
+        els.yearChart.innerHTML = html;
+
+        els.yearChart.querySelectorAll(".chart-bar-group").forEach(function(g) {
+            g.addEventListener("click", function() {
+                els.filterYear.value = g.getAttribute("data-year");
+                applyFilters();
+            });
+        });
+    }
+
+    // ── Filters ──
+    function populateFilters(s) {
+        els.filterYear.innerHTML = '<option value="">Todos</option>';
+        s.years.forEach(function(y) {
+            els.filterYear.innerHTML += '<option value="' + y + '">' + y + '</option>';
+        });
+
+        els.filterType.innerHTML = '<option value="">Todos</option>';
+        s.types.forEach(function(t) {
+            els.filterType.innerHTML += '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
+        });
+
+        els.filterFormat.innerHTML = '<option value="">Todos</option>';
+        Object.keys(s.by_format).sort().forEach(function(f) {
+            els.filterFormat.innerHTML += '<option value="' + f + '">' + f + '</option>';
+        });
+    }
+
+    function applyFilters() {
+        var search = els.searchInput.value.toLowerCase().trim();
+        var year = els.filterYear.value;
+        var type = els.filterType.value;
+        var format = els.filterFormat.value;
+
+        filteredLotes = allLotes.filter(function(l) {
+            if (year && l.year !== year) return false;
+            if (type && l.type !== type) return false;
+            if (format && l.format !== format) return false;
+            if (search) {
+                var hay = (l.name + " " + l.filename + " " + l.type + " " + l.year).toLowerCase();
+                if (hay.indexOf(search) === -1) return false;
+            }
+            return true;
+        });
+
+        els.filterCount.textContent = filteredLotes.length + " de " + allLotes.length + " documentos";
+        renderTable(filteredLotes);
+    }
+
+    // ── Table ──
+    var typeClassMap = {
+        "Contestacao": "contestacao",
+        "Recurso Administrativo": "recurso",
+        "Parecer Tecnico": "parecer",
+        "Consolidado": "consolidado",
+        "Manual": "manual",
+        "Retificacao": "retificacao"
+    };
+
+    function getTypeClass(type) {
+        var norm = type.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return typeClassMap[norm] || "outro";
+    }
+
+    function renderTable(lotes) {
+        if (lotes.length === 0) {
+            els.tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><p>Nenhum documento encontrado com os filtros selecionados.</p></td></tr>';
+            return;
+        }
+
+        var html = "";
+        lotes.forEach(function(l, idx) {
+            var legacy = l.is_legacy ? '<span class="legacy-badge">antigo</span>' : "";
+            html += '<tr>' +
+                '<td class="col-id">' + (idx + 1) + '</td>' +
+                '<td class="col-year"><span class="year-badge">' + escapeHtml(l.year) + '</span></td>' +
+                '<td><div class="doc-name">' + escapeHtml(l.name) + legacy + '</div><div class="doc-filename">' + escapeHtml(l.filename) + '</div></td>' +
+                '<td class="col-type"><span class="type-badge type-' + getTypeClass(l.type) + '">' + escapeHtml(l.type) + '</span></td>' +
+                '<td class="col-format"><span class="format-badge format-' + l.format.toLowerCase() + '">' + l.format + '</span></td>' +
+                '<td class="col-action"><a href="' + escapeHtml(l.url) + '" target="_blank" rel="noopener" class="btn btn-download">' +
+                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Baixar</a></td>' +
+                '</tr>';
+        });
+        els.tbody.innerHTML = html;
+    }
+
+    // ── Copy Links ──
+    function copyFilteredLinks() {
+        if (filteredLotes.length === 0) { showToast("Nenhum link para copiar."); return; }
+        var links = filteredLotes.map(function(l) { return l.url; }).join("\n");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(links).then(function() {
+                showToast(filteredLotes.length + " links copiados!");
+            }).catch(function() { fallbackCopy(links); });
+        } else { fallbackCopy(links); }
+    }
+
+    function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); showToast(filteredLotes.length + " links copiados!"); }
+        catch(e) { showToast("Erro ao copiar."); }
+        document.body.removeChild(ta);
+    }
+
+    // ── Debounce ──
+    function debounce(fn, delay) {
+        var timer;
+        return function() {
+            var args = arguments; var ctx = this;
+            clearTimeout(timer);
+            timer = setTimeout(function() { fn.apply(ctx, args); }, delay);
+        };
+    }
+
+    // ── Render data ──
+    function loadData(data) {
+        hideError();
+        allLotes = data.lotes;
+        stats = data.stats;
+        renderStats(stats);
+        renderChart(stats);
+        populateFilters(stats);
+        applyFilters();
+        if (data.scraped_at) {
+            els.scrapedAt.textContent = "Atualizado: " + data.scraped_at;
+        }
+    }
+
+    // ── Events ──
+    els.searchInput.addEventListener("input", debounce(applyFilters, 250));
+    els.filterYear.addEventListener("change", applyFilters);
+    els.filterType.addEventListener("change", applyFilters);
+    els.filterFormat.addEventListener("change", applyFilters);
+
+    els.btnRefresh.addEventListener("click", function() {
+        showLoading(true);
+        // Tenta recarregar a pagina inteira como fallback mais seguro
+        window.location.reload();
+    });
+
+    els.btnCopyLinks.addEventListener("click", copyFilteredLinks);
+
+    // ── Init ──
+    // Usar dados embutidos no HTML (sem AJAX!)
+    if (typeof INITIAL_DATA !== "undefined" && INITIAL_DATA !== null) {
+        showLoading(false);
+        loadData(INITIAL_DATA);
+    } else {
+        // Fallback: tentar via API
+        showLoading(true);
+        fetchLotesViaAPI().then(function(data) {
+            showLoading(false);
+            if (data && data.lotes) {
+                loadData(data);
+            } else {
+                showLoading(false);
+                showError("Dados indisponíveis. Tente recarregar a página.");
+            }
+        }).catch(function(err) {
+            showLoading(false);
+            showError("Erro ao carregar: " + err.message);
+        });
+    }
+})();
+    </script>
+</body>
+</html>

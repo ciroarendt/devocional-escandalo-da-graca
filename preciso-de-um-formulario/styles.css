@@ -1,0 +1,249 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Form Layout */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.flex-1 { flex: 1; }
+.form-group.flex-2 { flex: 2; }
+.form-group.flex-3 { flex: 3; }
+
+label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  outline: none;
+  background: #fff;
+}
+
+input:focus {
+  border-color: #2c5364;
+  box-shadow: 0 0 0 3px rgba(44, 83, 100, 0.15);
+}
+
+input[readonly] {
+  background: #f5f5f5;
+  color: #555;
+  cursor: default;
+}
+
+input[readonly]:focus {
+  border-color: #e0e0e0;
+  box-shadow: none;
+}
+
+input.filled {
+  background: #eafff3;
+  border-color: #2ecc71;
+}
+
+input::placeholder {
+  color: #bbb;
+}
+
+/* CEP Input */
+.cep-group {
+  max-width: 220px;
+}
+
+.cep-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cep-input-wrapper input {
+  width: 100%;
+  padding-right: 44px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Spinner */
+.spinner {
+  position: absolute;
+  right: 14px;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #2c5364;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Status Icon */
+.status-icon {
+  position: absolute;
+  right: 14px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.status-icon.success {
+  color: #2ecc71;
+}
+
+.status-icon.error {
+  color: #e74c3c;
+}
+
+/* Error Message */
+.error-message {
+  font-size: 0.8rem;
+  color: #e74c3c;
+  margin-top: 4px;
+  min-height: 18px;
+}
+
+/* Hidden */
+.hidden {
+  display: none !important;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #203a43, #2c5364);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  margin-top: 8px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(44, 83, 100, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Result Card */
+.result-card {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #eafff3, #d4f5e9);
+  border: 2px solid #2ecc71;
+  border-radius: 12px;
+  animation: slideUp 0.4s ease-out;
+}
+
+.result-card h2 {
+  font-size: 1.1rem;
+  color: #27ae60;
+  margin-bottom: 8px;
+}
+
+.result-card p {
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .container {
+    padding: 24px 20px;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cep-group {
+    max-width: 100%;
+  }
+
+  .form-group.flex-1,
+  .form-group.flex-2,
+  .form-group.flex-3 {
+    flex: 1;
+  }
+}

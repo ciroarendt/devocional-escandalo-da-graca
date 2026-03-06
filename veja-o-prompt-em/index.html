@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>codrsync × Inventeer — Parceria Estratégica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --white: #ffffff;
+    --gray: #8892a4;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --red: #ff4466;
+    --green: #00e676;
+    --yellow: #ffd700;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+  }
+  body { height: 100%; }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--cyan), #7c3aed);
+    width: 0%; z-index: 1000; transition: width 0.3s ease;
+  }
+
+  /* Slide counter */
+  #slide-counter {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px; color: var(--gray); z-index: 1000;
+    letter-spacing: 0.1em; font-weight: 500;
+  }
+
+  /* Nav dots */
+  #nav-dots {
+    position: fixed; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px; z-index: 1000;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); cursor: pointer;
+    transition: all 0.3s; border: none; padding: 0;
+  }
+  .dot.active { background: var(--cyan); transform: scale(1.4); }
+  .dot:hover { background: rgba(0,212,255,0.6); }
+
+  /* Sections */
+  section {
+    scroll-snap-align: start;
+    height: 100vh; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 60px 40px;
+  }
+  .slide-inner { max-width: 1100px; width: 100%; text-align: center; }
+
+  /* Animations */
+  .anim { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .anim.from-left { transform: translateX(-40px); }
+  .anim.from-right { transform: translateX(40px); }
+  .anim.scale-in { transform: scale(0.85); }
+  .anim.visible { opacity: 1 !important; transform: none !important; }
+  .anim.d1 { transition-delay: 0.1s; }
+  .anim.d2 { transition-delay: 0.2s; }
+  .anim.d3 { transition-delay: 0.3s; }
+  .anim.d4 { transition-delay: 0.4s; }
+  .anim.d5 { transition-delay: 0.5s; }
+  .anim.d6 { transition-delay: 0.6s; }
+  .anim.d7 { transition-delay: 0.7s; }
+  .anim.d8 { transition-delay: 0.8s; }
+
+  /* Typography */
+  h1.logo {
+    font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan) 0%, #ffffff 60%, var(--cyan) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1; letter-spacing: -0.03em;
+  }
+  h2.slide-title {
+    font-size: clamp(1.4rem, 3vw, 2.6rem); font-weight: 800;
+    line-height: 1.2; margin-bottom: 0.4em;
+  }
+  h2.slide-title .cy { color: var(--cyan); }
+  .subtitle { font-size: clamp(0.95rem, 1.8vw, 1.3rem); color: var(--gray); font-weight: 400; line-height: 1.5; }
+
+  .badge {
+    display: inline-block; padding: 5px 14px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .bg { background: rgba(255,255,255,0.08); color: var(--gray); border: 1px solid rgba(255,255,255,0.12); }
+  .bc { background: rgba(0,212,255,0.12); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+  .bgreen { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 20px; backdrop-filter: blur(10px);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 12px; border-bottom: 1px solid var(--card-border); }
+  td { padding: 10px 12px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== SLIDE 1 ===== */
+  #s1 { background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,212,255,0.07) 0%, transparent 70%), var(--bg); }
+  .logo-pulse { animation: logopulse 3s ease-in-out infinite; }
+  @keyframes logopulse { 0%,100% { filter: drop-shadow(0 0 20px rgba(0,212,255,0.3)); } 50% { filter: drop-shadow(0 0 50px rgba(0,212,255,0.7)); } }
+  .partnership { font-size: clamp(0.9rem, 1.8vw, 1.4rem); font-weight: 600; color: rgba(255,255,255,0.65); margin: 14px 0 8px; letter-spacing: 0.04em; }
+
+  /* ===== SLIDE 2 ===== */
+  .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; text-align: left; }
+  .prob-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 18px 16px; display: flex; align-items: flex-start; gap: 12px; }
+  .prob-card .ico { font-size: 1.8rem; flex-shrink: 0; }
+  .prob-card p { font-size: 0.85rem; color: rgba(255,255,255,0.72); line-height: 1.5; }
+  .big-n { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; color: var(--cyan); line-height: 1; }
+  .big-n-lbl { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+
+  /* ===== SLIDE 3 ===== */
+  .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0; text-align: left; }
+  .feat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px 14px; }
+  .feat-card .fi { font-size: 1.4rem; margin-bottom: 8px; }
+  .feat-card .ft { font-size: 0.8rem; font-weight: 600; margin-bottom: 3px; }
+  .feat-card .fs { font-size: 0.7rem; color: var(--gray); margin-bottom: 8px; }
+  .hl-text { font-size: 1.05rem; font-weight: 700; color: var(--cyan); margin-top: 14px; }
+
+  /* ===== SLIDE 4 ===== */
+  .tract-lay { display: grid; grid-template-columns: 1fr 1.6fr; gap: 28px; text-align: left; }
+  .m-cards { display: flex; flex-direction: column; gap: 9px; }
+  .m-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 11px 15px; display: flex; justify-content: space-between; align-items: center; }
+  .m-card .ml { font-size: 0.75rem; color: var(--gray); }
+  .m-card .mv { font-size: 0.88rem; font-weight: 700; }
+  .bar-sec h3 { font-size: 0.78rem; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+  .bar-lbl { font-size: 0.72rem; color: var(--gray); width: 90px; flex-shrink: 0; }
+  .bar-trk { flex: 1; height: 7px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--cyan)); border-radius: 4px; width: 0; transition: width 1s ease 0.3s; }
+  .bar-val { font-size: 0.72rem; color: var(--cyan); font-weight: 600; width: 46px; text-align: right; }
+  .tot-row { border-top: 1px solid var(--card-border); padding-top: 9px; margin-top: 5px; }
+  .tot-amt { font-size: 1.4rem; font-weight: 900; color: var(--cyan); }
+
+  /* ===== SLIDE 5 ===== */
+  .tl-wrap { margin: 28px 0; }
+  .tl-track { display: flex; align-items: flex-start; position: relative; }
+  .tl-bg { position: absolute; top: 28px; left: 5%; right: 5%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+  .tl-fill { position: absolute; top: 28px; left: 5%; height: 4px; background: linear-gradient(90deg, #555, var(--yellow), var(--cyan)); border-radius: 2px; width: 0; transition: width 1.3s ease 0.5s; }
+  .tl-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; position: relative; z-index: 2; }
+  .tl-dot { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; margin-bottom: 12px; border: 3px solid; }
+  .tl-yr { font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+  .tl-d { font-size: 0.73rem; line-height: 1.4; }
+  .tl-t { font-size: 0.65rem; margin-top: 4px; opacity: 0.55; }
+  .past .tl-dot { background: rgba(136,146,164,0.1); border-color: var(--gray); color: var(--gray); }
+  .past .tl-yr { color: var(--gray); }
+  .ymid .tl-dot { background: rgba(255,215,0,0.1); border-color: var(--yellow); color: var(--yellow); }
+  .ymid .tl-yr { color: var(--yellow); }
+  .now .tl-dot { background: rgba(0,212,255,0.15); border-color: var(--cyan); color: var(--cyan); animation: pr 2s ease-in-out infinite; }
+  .now .tl-yr { color: var(--cyan); font-weight: 800; font-size: 0.95rem; }
+  @keyframes pr { 0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); } 50% { box-shadow: 0 0 0 12px rgba(0,212,255,0); } }
+  .fut .tl-dot { background: rgba(255,68,102,0.1); border-color: var(--red); color: var(--red); }
+  .fut .tl-yr { color: var(--red); }
+  .timing-note { font-size: 0.95rem; color: rgba(255,255,255,0.65); max-width: 580px; margin: 0 auto; line-height: 1.6; }
+
+  /* ===== SLIDE 6 ===== */
+  .fit-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; text-align: left; }
+  .fit-col h3 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .fit-col.lft h3 { color: var(--cyan); }
+  .fit-col.rgt h3 { color: rgba(255,255,255,0.8); }
+  .fi-item { padding: 9px 13px; margin-bottom: 7px; border-radius: 8px; font-size: 0.81rem; }
+  .fit-col.lft .fi-item { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.15); color: rgba(255,255,255,0.78); }
+  .fit-col.rgt .fi-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.78); }
+  .fit-arrows { display: flex; flex-direction: column; gap: 22px; align-items: center; }
+  .fa { font-size: 1.1rem; color: var(--cyan); opacity: 0; transition: opacity 0.4s; }
+  .fa.vis { opacity: 1; }
+  .fit-note { font-size: 0.83rem; color: rgba(255,255,255,0.6); margin-top: 16px; font-style: italic; }
+
+  /* ===== SLIDE 7 ===== */
+  .prop-lay { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: center; text-align: left; }
+  .donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .donut { position: relative; width: 180px; height: 180px; }
+  .donut svg { transform: rotate(-90deg); }
+  .dc { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .dc-val { font-size: 1.4rem; font-weight: 800; color: var(--cyan); }
+  .dc-lbl { font-size: 0.65rem; color: var(--gray); }
+  .dbg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 26; }
+  .dciro { fill: none; stroke: var(--cyan); stroke-width: 26; stroke-linecap: round; stroke-dasharray: 0 440; transition: stroke-dasharray 1.5s cubic-bezier(0.4,0,0.2,1) 0.3s; }
+  .dinv { fill: none; stroke: rgba(255,255,255,0.55); stroke-width: 26; stroke-linecap: round; stroke-dasharray: 0 440; transition: stroke-dasharray 1.5s cubic-bezier(0.4,0,0.2,1) 0.6s; }
+  .d-legend { display: flex; gap: 18px; font-size: 0.78rem; }
+  .dl { display: flex; align-items: center; gap: 6px; }
+  .dl-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .contrib-cards { display: flex; flex-direction: column; gap: 14px; }
+  .cc { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 18px; }
+  .cc h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .cc.ciro h4 { color: var(--cyan); }
+  .cc.inv h4 { color: rgba(255,255,255,0.55); }
+  .cc ul { list-style: none; }
+  .cc li { font-size: 0.8rem; color: rgba(255,255,255,0.68); padding: 2px 0; }
+  .cc li::before { content: "→ "; color: var(--cyan); }
+
+  /* ===== SLIDE 8 ===== */
+  .inv-table tr.hr td { background: rgba(0,212,255,0.08); color: var(--cyan); font-weight: 700; }
+  .inv-note { font-size: 0.83rem; color: var(--gray); margin-top: 16px; line-height: 1.6; font-style: italic; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+  /* ===== SLIDE 9 ===== */
+  .rev-lay { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: start; text-align: left; }
+  .vchart { display: flex; align-items: flex-end; gap: 10px; height: 200px; position: relative; margin-top: 28px; }
+  .be-line { position: absolute; left: 0; right: 0; border-top: 2px dashed rgba(255,215,0,0.5); display: flex; align-items: center; }
+  .be-lbl { font-size: 0.65rem; color: var(--yellow); margin-left: 6px; white-space: nowrap; }
+  .vb-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  .vb { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--cyan), var(--cyan2)); min-height: 3px; height: 0; transition: height 1.2s cubic-bezier(0.4,0,0.2,1) 0.3s; }
+  .vb.green { background: linear-gradient(180deg, var(--green), #00b050); }
+  .vb-lbl { font-size: 0.62rem; color: var(--gray); text-align: center; }
+  .vb-val { font-size: 0.65rem; color: var(--cyan); font-weight: 700; }
+  .rev-stats { display: flex; flex-direction: column; gap: 12px; min-width: 190px; }
+  .rs { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 15px; text-align: center; }
+  .rs-v { font-size: 1.4rem; font-weight: 800; color: var(--cyan); }
+  .rs-l { font-size: 0.7rem; color: var(--gray); margin-top: 3px; }
+
+  /* ===== SLIDE 10 ===== */
+  .rm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; text-align: left; }
+  .rmc { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; }
+  .rmc h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .rmc.q1 h3 { color: var(--cyan); }
+  .rmc.q2 h3 { color: var(--yellow); }
+  .rmc.q3 h3 { color: var(--green); }
+  .rm-sub { font-size: 0.72rem; color: var(--gray); margin-bottom: 14px; }
+  .rmi { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; font-size: 0.78rem; color: rgba(255,255,255,0.73); line-height: 1.4; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; }
+  .rmi.show { opacity: 1; transform: none; }
+  .rmc.q1 .rmi::before { content: "▹"; color: var(--cyan); flex-shrink: 0; }
+  .rmc.q2 .rmi::before { content: "▹"; color: var(--yellow); flex-shrink: 0; }
+  .rmc.q3 .rmi::before { content: "▹"; color: var(--green); flex-shrink: 0; }
+
+  /* ===== SLIDE 11 ===== */
+  .moat-lay { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: start; text-align: left; }
+  .conc { position: relative; width: 220px; height: 220px; flex-shrink: 0; margin: 0 auto; }
+  .cr { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .cr-out { width: 220px; height: 220px; border: 2px solid rgba(136,146,164,0.35); background: rgba(136,146,164,0.03); }
+  .cr-mid { width: 155px; height: 155px; border: 2px solid rgba(0,212,255,0.35); background: rgba(0,212,255,0.04); }
+  .cr-in { width: 90px; height: 90px; border: 2px solid var(--cyan); background: rgba(0,212,255,0.1); font-size: 0.6rem; font-weight: 700; color: var(--cyan); padding: 8px; }
+  .cr-lbl { position: absolute; font-size: 0.58rem; font-weight: 600; text-align: center; white-space: nowrap; }
+  .comp-t th { font-size: 0.68rem; }
+  .comp-t td { font-size: 0.73rem; }
+  .ck { color: var(--green); font-weight: 700; }
+  .xx { color: var(--red); }
+  .pp { color: var(--yellow); }
+
+  /* ===== SLIDE 12 ===== */
+  .risk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .rc {
+    background: var(--card-bg); border-radius: 12px; padding: 16px;
+    border: 1px solid rgba(255,68,102,0.2); cursor: default;
+    transition: border-color 0.3s; position: relative; overflow: hidden; text-align: left;
+    min-height: 120px;
+  }
+  .rc:hover { border-color: rgba(0,230,118,0.4); }
+  .rc:hover .r-risk { opacity: 0; pointer-events: none; }
+  .rc:hover .r-mit { opacity: 1; }
+  .r-ico { font-size: 1.4rem; margin-bottom: 8px; }
+  .r-risk, .r-mit { transition: opacity 0.3s; }
+  .r-mit { position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; opacity: 0; }
+  .r-title { font-size: 0.78rem; font-weight: 700; margin-bottom: 5px; }
+  .r-risk .r-title { color: var(--red); }
+  .r-mit .r-title { color: var(--green); }
+  .r-text { font-size: 0.72rem; color: rgba(255,255,255,0.63); line-height: 1.5; }
+  .risk-hint { font-size: 0.68rem; color: var(--gray); margin-top: 10px; font-style: italic; }
+
+  /* ===== SLIDE 13 ===== */
+  .terms-t td { padding: 11px 15px; font-size: 0.83rem; }
+  .terms-t td:first-child { color: var(--gray); font-weight: 600; width: 32%; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .terms-t tr.kt td { background: rgba(0,212,255,0.05); }
+  .terms-t tr.kt td:last-child { color: var(--cyan); font-weight: 600; }
+
+  /* ===== SLIDE 14 ===== */
+  .bio-lay { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: start; text-align: left; }
+  .avatar-w { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .avatar { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; border: 3px solid var(--cyan); }
+  .bio-name { font-size: clamp(1.4rem, 2.8vw, 2rem); font-weight: 800; }
+  .bio-badges { display: flex; gap: 7px; flex-wrap: wrap; margin: 9px 0; }
+  .edu-b { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 3px 11px; font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.65); }
+  .client-logos { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .cl { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 5px 11px; font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.45); }
+  .bio-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-top: 12px; }
+  .bstat { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 11px; }
+  .bstat .bsv { font-size: 1.05rem; font-weight: 800; color: var(--cyan); }
+  .bstat .bsl { font-size: 0.68rem; color: var(--gray); }
+
+  /* ===== SLIDE 15 ===== */
+  .steps-w { display: flex; flex-direction: column; gap: 0; max-width: 580px; margin: 18px auto; text-align: left; }
+  .step { display: flex; gap: 18px; align-items: flex-start; }
+  .step-ln { display: flex; flex-direction: column; align-items: center; }
+  .step-n { width: 38px; height: 38px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .step-c { width: 2px; height: 26px; background: linear-gradient(var(--cyan), rgba(0,212,255,0.1)); }
+  .step:last-child .step-c { display: none; }
+  .step-cnt { padding-bottom: 22px; }
+  .step-t { font-size: 0.88rem; font-weight: 700; margin-bottom: 3px; }
+  .step-d { font-size: 0.76rem; color: var(--gray); }
+  .cta-btn {
+    display: inline-block; margin-top: 18px; padding: 13px 34px;
+    background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+    color: var(--bg); font-weight: 800; font-size: 0.95rem;
+    border-radius: 30px; border: none; cursor: pointer; text-decoration: none;
+    animation: pb 2s ease-in-out infinite; letter-spacing: 0.03em;
+  }
+  @keyframes pb { 0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,0.4); } 50% { box-shadow: 0 0 0 16px rgba(0,212,255,0); } }
+
+  /* ===== SLIDE 16 ===== */
+  #s16 { background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,212,255,0.05) 0%, transparent 70%), var(--bg); }
+  .closing-h { font-size: clamp(1.3rem, 3vw, 2.4rem); font-weight: 800; line-height: 1.3; max-width: 680px; margin: 0 auto 28px; }
+  .tw { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 3px solid var(--cyan); width: 0; }
+  .tw.run { animation: tw 3.2s steps(52) 0.4s forwards, blink 0.8s step-end infinite; }
+  @keyframes tw { to { width: 100%; } }
+  @keyframes blink { 50% { border-color: transparent; } }
+  .logos-row { display: flex; align-items: center; justify-content: center; gap: 28px; margin: 22px 0; }
+  .lb { font-size: 1.3rem; font-weight: 800; }
+  .lb.cs { background: linear-gradient(135deg, var(--cyan), white); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .lb.iv { color: rgba(255,255,255,0.65); }
+  .lp { font-size: 1.4rem; color: var(--gray); }
+  .contact { font-size: 0.83rem; color: var(--gray); line-height: 1.8; }
+  .contact a { color: var(--cyan); text-decoration: none; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    section { padding: 60px 18px; }
+    #nav-dots { right: 6px; }
+    .feat-grid { grid-template-columns: repeat(2, 1fr); }
+    .prob-grid { grid-template-columns: 1fr; }
+    .tract-lay, .prop-lay, .bio-lay, .moat-lay, .rev-lay { grid-template-columns: 1fr; }
+    .fit-grid { grid-template-columns: 1fr; }
+    .fit-arrows { display: none; }
+    .risk-grid { grid-template-columns: repeat(2, 1fr); }
+    .rm-grid { grid-template-columns: 1fr; }
+    .tl-dot { width: 40px; height: 40px; font-size: 0.72rem; }
+    .tl-d, .tl-t { font-size: 0.62rem; }
+  }
+
+  @media print {
+    html { scroll-snap-type: none; overflow: visible; }
+    section { height: auto; min-height: 100vh; page-break-after: always; }
+    #progress-bar, #nav-dots, #slide-counter { display: none; }
+    .anim { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="slide-counter">Slide 1 de 16</div>
+<div id="nav-dots"></div>
+
+<!-- S1: CAPA -->
+<section id="s1">
+  <div class="slide-inner">
+    <div class="anim logo-pulse"><h1 class="logo">codrsync</h1></div>
+    <div class="anim d2 partnership">codrsync + Inventeer Technologies</div>
+    <div class="anim d3 subtitle" style="max-width:580px;margin:8px auto 20px">Building the future of AI-assisted development, together.</div>
+    <div class="anim d4"><span class="badge bg">Confidencial — Fevereiro 2026</span></div>
+  </div>
+</section>
+
+<!-- S2: PROBLEMA -->
+<section id="s2">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Desenvolvedores perdem <span class="cy">60%</span> do tempo<br>com contexto, não com código</h2>
+    <div class="prob-grid">
+      <div class="prob-card anim from-left d1"><span class="ico">🔄</span><p>Cada sessão de IA começa do zero — sem memória, sem contexto, sem continuidade</p></div>
+      <div class="prob-card anim from-left d2"><span class="ico">💸</span><p>Empresas pagam $150–300/hora por consultores de IA que refazem trabalho a cada sessão</p></div>
+      <div class="prob-card anim from-left d3"><span class="ico">⚙️</span><p>Ferramentas existentes focam em geração de código, não em orquestração inteligente</p></div>
+      <div class="prob-card anim from-left d4"><span class="ico">🔒</span><p>Zero compliance (SOC 2/HIPAA) em dev tools — segurança é afterthought</p></div>
+    </div>
+    <div class="anim d5">
+      <div class="big-n">$17B+</div>
+      <div class="big-n-lbl">Mercado de dev tools (2025) · crescendo 20% ao ano</div>
+    </div>
+  </div>
+</section>
+
+<!-- S3: SOLUÇÃO -->
+<section id="s3">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">codrsync — O primeiro <span class="cy">AI orchestrator</span><br>com Context Engineering</h2>
+    <div class="feat-grid">
+      <div class="feat-card anim d1"><div class="fi">⌨️</div><div class="ft">CLI BYOK</div><div class="fs">Claude, GPT, Gemini, Grok, Ollama</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d2"><div class="fi">☁️</div><div class="ft">Cloud Workspaces</div><div class="fs">Containers isolados, preview ao vivo</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d3"><div class="fi">🧠</div><div class="ft">Context Engineering</div><div class="fs">Memória persistente, superego</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d4"><div class="fi">💳</div><div class="ft">Billing Completo</div><div class="fs">Stripe, créditos, multi-org, 5 tiers</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d5"><div class="fi">📊</div><div class="ft">Geração de Apresentações</div><div class="fs">PPTX pipeline</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d6"><div class="fi">🔍</div><div class="ft">RAG API</div><div class="fs">Busca vetorial inteligente</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d7"><div class="fi">🔧</div><div class="ft">MCP Tools</div><div class="fs">Extensões para Claude</div><span class="badge bgreen">LIVE</span></div>
+      <div class="feat-card anim d8"><div class="fi">🤝</div><div class="ft">HITL</div><div class="fs">Human-in-the-Loop, plan mode</div><span class="badge bgreen">LIVE</span></div>
+    </div>
+    <p class="hl-text anim d8">100% funcional. Pronto para escalar.</p>
+  </div>
+</section>
+
+<!-- S4: TRACTION -->
+<section id="s4">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Traction & <span class="cy">Métricas</span></h2>
+    <div class="tract-lay">
+      <div class="m-cards">
+        <div class="m-card anim from-left d1"><span class="ml">Status</span><span><span class="badge bgreen">Production-ready</span></span></div>
+        <div class="m-card anim from-left d2"><span class="ml">Infraestrutura</span><span class="mv">2 servidores ARM</span></div>
+        <div class="m-card anim from-left d3"><span class="ml">Pricing tiers</span><span class="mv" style="color:var(--cyan)">5 tiers</span></div>
+        <div class="m-card anim from-left d4"><span class="ml">Custo operacional</span><span class="mv" style="color:var(--green)">$20/mês</span></div>
+        <div class="m-card anim from-left d5"><span class="ml">Linhas de código</span><span class="mv" style="color:var(--cyan)">50.000+</span></div>
+      </div>
+      <div class="bar-sec anim from-right d2">
+        <h3>Custo de Replicação</h3>
+        <div class="bar-row"><span class="bar-lbl">CLI / BYOK</span><div class="bar-trk"><div class="bar-fill" data-w="13%"></div></div><span class="bar-val">$50K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Workspaces</span><div class="bar-trk"><div class="bar-fill" data-w="26%"></div></div><span class="bar-val">$100K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Agent Service</span><div class="bar-trk"><div class="bar-fill" data-w="18%"></div></div><span class="bar-val">$70K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Gen-service</span><div class="bar-trk"><div class="bar-fill" data-w="9%"></div></div><span class="bar-val">$35K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Billing</span><div class="bar-trk"><div class="bar-fill" data-w="12%"></div></div><span class="bar-val">$45K</span></div>
+        <div class="bar-row"><span class="bar-lbl">RAG API</span><div class="bar-trk"><div class="bar-fill" data-w="8%"></div></div><span class="bar-val">$30K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Web</span><div class="bar-trk"><div class="bar-fill" data-w="9%"></div></div><span class="bar-val">$35K</span></div>
+        <div class="bar-row"><span class="bar-lbl">Infra / CI</span><div class="bar-trk"><div class="bar-fill" data-w="5%"></div></div><span class="bar-val">$18K</span></div>
+        <div class="bar-row tot-row"><span class="bar-lbl" style="color:var(--white);font-weight:700">TOTAL</span><div style="flex:1"></div><span class="tot-amt">$383K</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5: TIMING -->
+<section id="s5">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">A janela está <span class="cy">se fechando</span></h2>
+    <div class="tl-wrap anim d2">
+      <div style="position:relative">
+        <div class="tl-bg"></div>
+        <div class="tl-fill" id="tl-fill"></div>
+        <div class="tl-track">
+          <div class="tl-item past">
+            <div class="tl-dot">2024</div>
+            <div class="tl-yr">Geração de Código</div>
+            <div class="tl-d">Corrida por code generation</div>
+            <div class="tl-t">Cursor · Copilot · v0 · Bolt</div>
+          </div>
+          <div class="tl-item ymid">
+            <div class="tl-dot">2025</div>
+            <div class="tl-yr">Orquestração</div>
+            <div class="tl-d">Diferenciação via contexto</div>
+            <div class="tl-t">Claude SDK · MCP · Lovable</div>
+          </div>
+          <div class="tl-item now">
+            <div class="tl-dot">2026</div>
+            <div class="tl-yr">NÓS ESTAMOS AQUI</div>
+            <div class="tl-d">Distribuição enterprise</div>
+            <div class="tl-t">codrsync + Inventeer</div>
+          </div>
+          <div class="tl-item fut">
+            <div class="tl-dot">2027</div>
+            <div class="tl-yr">Comoditização</div>
+            <div class="tl-d">Quem não tem clientes morre</div>
+            <div class="tl-t">Total commodity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="timing-note anim d3">Em 12 meses, ter produto não será suficiente.<br><strong style="color:var(--cyan)">Distribuição enterprise será o moat.</strong></p>
+  </div>
+</section>
+
+<!-- S6: POR QUE INVENTEER -->
+<section id="s6">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">O encaixe <span class="cy">perfeito</span></h2>
+    <div class="fit-grid anim d2">
+      <div class="fit-col lft">
+        <h3>codrsync precisa</h3>
+        <div class="fi-item">Compliance enterprise (SOC 2, HIPAA)</div>
+        <div class="fi-item">Canal de vendas B2B/enterprise</div>
+        <div class="fi-item">Time de engenharia para escalar</div>
+        <div class="fi-item">Credibilidade institucional</div>
+        <div class="fi-item">Infraestrutura de segurança</div>
+      </div>
+      <div class="fit-arrows" id="fit-arrows">
+        <div class="fa">→</div><div class="fa">→</div><div class="fa">→</div><div class="fa">→</div><div class="fa">→</div>
+      </div>
+      <div class="fit-col rgt">
+        <h3>Inventeer tem</h3>
+        <div class="fi-item">Especialidade #1 da empresa</div>
+        <div class="fi-item">Clientes em 5 países</div>
+        <div class="fi-item">18+ engenheiros, contratando</div>
+        <div class="fi-item">6 anos, sede no Canadá</div>
+        <div class="fi-item">ISO 27001, GDPR, Pentest</div>
+      </div>
+    </div>
+    <p class="fit-note anim d4">A Inventeer já usa Claude Code internamente. codrsync é a evolução natural.</p>
+  </div>
+</section>
+
+<!-- S7: PROPOSTA -->
+<section id="s7">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Parceria <span class="cy">Estratégica</span></h2>
+    <div class="prop-lay anim d2">
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle class="dbg" cx="90" cy="90" r="70"/>
+            <circle class="dinv" id="d-inv" cx="90" cy="90" r="70"/>
+            <circle class="dciro" id="d-ciro" cx="90" cy="90" r="70"/>
+          </svg>
+          <div class="dc"><div class="dc-val">55/45</div><div class="dc-lbl">equity split</div></div>
+        </div>
+        <div class="d-legend">
+          <div class="dl"><div class="dl-dot" style="background:var(--cyan)"></div> Ciro 55%</div>
+          <div class="dl"><div class="dl-dot" style="background:rgba(255,255,255,0.55)"></div> Inventeer 45%</div>
+        </div>
+        <div><span class="badge bc">Entidade independente</span></div>
+      </div>
+      <div class="contrib-cards">
+        <div class="cc ciro">
+          <h4>Ciro aporta</h4>
+          <ul>
+            <li>IP completo ($320–445K em valor)</li>
+            <li>CTO full-time dedicado</li>
+            <li>Visão de produto e roadmap</li>
+            <li>18 meses de desenvolvimento</li>
+          </ul>
+        </div>
+        <div class="cc inv">
+          <h4>Inventeer aporta</h4>
+          <ul>
+            <li>Salary CTO: $10K/mês</li>
+            <li>Expertise compliance (SOC 2, HIPAA)</li>
+            <li>Time de engenharia</li>
+            <li>Canal enterprise (5 países)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: INVESTIMENTO -->
+<section id="s8">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">$10K/mês — O investimento <span class="cy">mais eficiente</span></h2>
+    <div class="card anim d2" style="text-align:left;margin-top:18px">
+      <table class="inv-table">
+        <thead><tr><th>Alternativa</th><th>Custo</th><th>Prazo</th><th>Risco</th></tr></thead>
+        <tbody>
+          <tr><td>Construir internamente (3-4 devs)</td><td>$300–500K</td><td>12-18 meses</td><td style="color:var(--red)">Alto</td></tr>
+          <tr><td>Adquirir startup (M&A)</td><td>$500K–2M</td><td>3-6 meses</td><td style="color:var(--yellow)">Médio</td></tr>
+          <tr><td>Licenciar white-label</td><td>$5-15K/mês + royalties</td><td>Imediato</td><td style="color:var(--yellow)">Lock-in</td></tr>
+          <tr class="hr"><td>★ Esta proposta (codrsync)</td><td>$10K/mês + 45% equity</td><td>Imediato</td><td style="color:var(--green)">Baixo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="inv-note anim d3">"Rate de mercado do CTO: $267/hora = $42K/mês. Você paga $10K. A diferença é o investimento dele no projeto."</p>
+  </div>
+</section>
+
+<!-- S9: PROJEÇÃO -->
+<section id="s9">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Projeção de <span class="cy">Receita</span></h2>
+    <div class="rev-lay">
+      <div>
+        <div class="vchart" id="vchart">
+          <div class="be-line" style="bottom:19%"><span class="be-lbl">— Breakeven $10.5K</span></div>
+          <div class="vb-wrap anim d1"><div class="vb-val">$0</div><div class="vb" data-h="1%" style="background:rgba(255,255,255,0.08)"></div><div class="vb-lbl">Q1<br>Setup</div></div>
+          <div class="vb-wrap anim d2"><div class="vb-val">$1K</div><div class="vb" data-h="2%"></div><div class="vb-lbl">Q2<br>Launch</div></div>
+          <div class="vb-wrap anim d3"><div class="vb-val">$4.2K</div><div class="vb" data-h="8%"></div><div class="vb-lbl">Q3<br>Scale</div></div>
+          <div class="vb-wrap anim d4"><div class="vb-val">$8.5K</div><div class="vb" data-h="15%"></div><div class="vb-lbl">Q4<br>PMF</div></div>
+          <div class="vb-wrap anim d5"><div class="vb-val">$22K</div><div class="vb green" data-h="40%"></div><div class="vb-lbl">Q5-6<br>Growth</div></div>
+          <div class="vb-wrap anim d6"><div class="vb-val">$55K</div><div class="vb green" data-h="98%"></div><div class="vb-lbl">Q7-8<br>Scale</div></div>
+        </div>
+      </div>
+      <div class="rev-stats">
+        <div class="rs anim d1"><div class="rs-v">Mês 10-12</div><div class="rs-l">Breakeven estimado</div></div>
+        <div class="rs anim d2"><div class="rs-v">$660K</div><div class="rs-l">ARR projetado (Ano 2)</div></div>
+        <div class="rs anim d3"><div class="rs-v">3–5x</div><div class="rs-l">ROI estimado (Ano 2)</div></div>
+        <div class="rs anim d4"><div class="rs-v">80%+</div><div class="rs-l">Margem SaaS</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S10: ROADMAP -->
+<section id="s10">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Roadmap do <span class="cy">Produto</span></h2>
+    <div class="rm-grid">
+      <div class="rmc q1 anim d1">
+        <h3>Q1 2026</h3><div class="rm-sub">Enterprise Foundation</div>
+        <div class="rmi">SOC 2 Type I compliance</div>
+        <div class="rmi">SSO/SAML para clientes enterprise</div>
+        <div class="rmi">Audit logging & data residency</div>
+        <div class="rmi">Onboarding Inventeer (early adopters)</div>
+        <div class="rmi">Documentação enterprise-grade</div>
+      </div>
+      <div class="rmc q2 anim d2">
+        <h3>Q2 2026</h3><div class="rm-sub">Go-to-Market</div>
+        <div class="rmi">Lançamento Pro & Team tiers</div>
+        <div class="rmi">Integração GCP/AWS</div>
+        <div class="rmi">Self-hosted option (HIPAA)</div>
+        <div class="rmi">Case study: "Como Inventeer usa codrsync"</div>
+        <div class="rmi">Primeiros 5 clientes pagantes</div>
+      </div>
+      <div class="rmc q3 anim d3">
+        <h3>Q3–Q4 2026</h3><div class="rm-sub">Escala</div>
+        <div class="rmi">SOC 2 Type II certification</div>
+        <div class="rmi">Marketplace de templates & extensões</div>
+        <div class="rmi">API pública para integrações</div>
+        <div class="rmi">Programa de parceiros/revendedores</div>
+        <div class="rmi">Meta: $8K+ MRR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S11: VANTAGEM COMPETITIVA -->
+<section id="s11">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Moat de <span class="cy">3 camadas</span></h2>
+    <div class="moat-lay">
+      <div class="anim scale-in d1">
+        <div class="conc">
+          <div class="cr cr-out">
+            <div class="cr cr-mid">
+              <div class="cr cr-in">codrsync<br>Produto</div>
+            </div>
+          </div>
+          <div class="cr-lbl" style="top:8px;left:50%;transform:translateX(-50%);color:var(--gray)">Distribuição (Inventeer)</div>
+          <div class="cr-lbl" style="top:36px;left:50%;transform:translateX(-50%);color:var(--cyan2)">Compliance</div>
+        </div>
+        <div style="margin-top:10px;font-size:0.65rem;color:var(--gray);text-align:center;line-height:1.8">
+          <div>🌍 5 países · Enterprise clients</div>
+          <div>🔒 SOC 2 · HIPAA · ISO 27001</div>
+          <div style="color:var(--cyan)">⚡ Context Eng · Multi-provider · MCP</div>
+        </div>
+      </div>
+      <div class="anim d2">
+        <table class="comp-t">
+          <thead>
+            <tr><th>Feature</th><th style="color:var(--cyan)">codrsync</th><th>Cursor</th><th>Bolt</th><th>Lovable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI code generation</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Context persistence</td><td class="ck">✓</td><td class="xx">✗</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+            <tr><td>Cloud workspaces</td><td class="ck">✓</td><td class="xx">✗</td><td class="ck">✓</td><td class="ck">✓</td></tr>
+            <tr><td>Multi-provider BYOK</td><td class="ck">✓</td><td class="pp">~</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+            <tr><td>SOC 2 / HIPAA</td><td class="ck">✓</td><td class="xx">✗</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+            <tr><td>Presentation gen</td><td class="ck">✓</td><td class="xx">✗</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+            <tr><td>Self-hosted</td><td class="ck">✓</td><td class="xx">✗</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+            <tr><td>Enterprise billing</td><td class="ck">✓</td><td class="ck">✓</td><td class="xx">✗</td><td class="xx">✗</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S12: RISCOS -->
+<section id="s12">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Transparência <span class="cy">total</span></h2>
+    <div class="risk-grid">
+      <div class="rc anim d1">
+        <div class="r-risk"><div class="r-ico">📉</div><div class="r-title">Zero receita atual</div><div class="r-text">Produto pre-revenue sem clientes pagantes</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Cliff de 6 meses com KPIs claros — saída limpa se não funcionar</div></div>
+      </div>
+      <div class="rc anim d2">
+        <div class="r-risk"><div class="r-ico">👤</div><div class="r-title">Key-person risk</div><div class="r-text">Ciro é o único desenvolvedor atualmente</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Inventeer contribui engenheiros + documentação enterprise-grade</div></div>
+      </div>
+      <div class="rc anim d3">
+        <div class="r-risk"><div class="r-ico">🌊</div><div class="r-title">Comoditização</div><div class="r-text">Mercado pode se comoditizar rapidamente</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Compliance + distribuição enterprise = moat duradouro</div></div>
+      </div>
+      <div class="rc anim d4">
+        <div class="r-risk"><div class="r-ico">🎯</div><div class="r-title">Product-Market Fit</div><div class="r-text">PMF não confirmado — fase de validação</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Canal Inventeer garante uso interno + clientes cativos</div></div>
+      </div>
+      <div class="rc anim d5">
+        <div class="r-risk"><div class="r-ico">🤝</div><div class="r-title">Compromissos</div><div class="r-text">Inventeer pode não cumprir os acordos</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Entidade separada; IP protegido; cliff bilateral</div></div>
+      </div>
+      <div class="rc anim d6">
+        <div class="r-risk"><div class="r-ico">💰</div><div class="r-title">Custo no caixa</div><div class="r-text">$10K/mês antes do breakeven</div></div>
+        <div class="r-mit"><div class="r-title">Mitigação</div><div class="r-text">Breakeven projetado em 10-12 meses (cenário conservador)</div></div>
+      </div>
+    </div>
+    <p class="risk-hint anim d7">Passe o mouse sobre os cards para ver as mitigações →</p>
+  </div>
+</section>
+
+<!-- S13: TERMOS -->
+<section id="s13">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Term Sheet <span class="cy">Resumido</span></h2>
+    <div class="card anim d2" style="text-align:left;margin-top:16px">
+      <table class="terms-t">
+        <tbody>
+          <tr class="kt"><td>Entidade</td><td>Nova LLC/Inc (US ou Canadá)</td></tr>
+          <tr class="kt"><td>Equity</td><td>Ciro 55% / Inventeer 45%</td></tr>
+          <tr><td>Vesting</td><td>4 anos, cliff 1 ano bilateral</td></tr>
+          <tr class="kt"><td>Salary CTO</td><td>USD $10.000/mês</td></tr>
+          <tr><td>Compromisso mínimo</td><td>12 meses com review semestral</td></tr>
+          <tr><td>KPIs 6 meses</td><td>SOC 2 readiness + 3 clientes pagantes + enterprise tier live</td></tr>
+          <tr><td>Board</td><td>2 Inventeer + 2 Ciro + 1 independente</td></tr>
+          <tr><td>Anti-dilution</td><td>Proteção mútua em futuras rodadas</td></tr>
+          <tr><td>Exit</td><td>ROFR mútuo; drag-along acima de $5M</td></tr>
+          <tr><td>IP</td><td>Transferido para nova entidade; licença perpétua se dissolução</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- S14: SOBRE CIRO -->
+<section id="s14">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Sobre <span class="cy">Ciro Arendt</span></h2>
+    <div class="bio-lay">
+      <div class="avatar-w anim d1">
+        <div class="avatar">CA</div>
+        <div class="bio-name">Ciro Arendt</div>
+        <div class="bio-badges">
+          <span class="edu-b">MIT</span><span class="edu-b">Columbia</span><span class="edu-b">Tuck</span><span class="edu-b">Berkeley</span>
+        </div>
+      </div>
+      <div class="anim d2">
+        <p style="font-size:0.75rem;color:var(--gray);margin-bottom:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Clientes & Parceiros</p>
+        <div class="client-logos">
+          <span class="cl">Google</span><span class="cl">Nestlé</span><span class="cl">L'Oréal</span><span class="cl">KPMG</span>
+          <span class="cl">Banco do Brasil</span><span class="cl">Scania</span><span class="cl">ExxonMobil</span><span class="cl">O Boticário</span>
+        </div>
+        <div class="bio-stats">
+          <div class="bstat"><div class="bsv">18 meses</div><div class="bsl">desenvolvimento solo</div></div>
+          <div class="bstat"><div class="bsv">50K+</div><div class="bsl">linhas de código</div></div>
+          <div class="bstat"><div class="bsv">$20/mês</div><div class="bsl">custo de infraestrutura</div></div>
+          <div class="bstat"><div class="bsv">5</div><div class="bsl">empresas fundadas</div></div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--gray);margin-top:12px;line-height:1.5">AI/ML · Context Engineering · DevOps · Cloud Architecture · Platform Engineering</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S15: PRÓXIMOS PASSOS -->
+<section id="s15">
+  <div class="slide-inner">
+    <h2 class="slide-title anim">Próximos <span class="cy">Passos</span></h2>
+    <div class="steps-w">
+      <div class="step anim d1"><div class="step-ln"><div class="step-n">📹</div><div class="step-c"></div></div><div class="step-cnt"><div class="step-t">1. Alinhamento <span style="color:var(--gray);font-weight:400;font-size:0.75rem">(esta semana)</span></div><div class="step-d">Reunião para discutir termos e alinhar expectativas</div></div></div>
+      <div class="step anim d2"><div class="step-ln"><div class="step-n">🔍</div><div class="step-c"></div></div><div class="step-cnt"><div class="step-t">2. Due Diligence Mútua <span style="color:var(--gray);font-weight:400;font-size:0.75rem">(1-2 semanas)</span></div><div class="step-d">Ciro: codebase + demo · Inventeer: financials + capacidade do time</div></div></div>
+      <div class="step anim d3"><div class="step-ln"><div class="step-n">📄</div><div class="step-c"></div></div><div class="step-cnt"><div class="step-t">3. Term Sheet <span style="color:var(--gray);font-weight:400;font-size:0.75rem">(semana 3)</span></div><div class="step-d">Documento formal com termos acordados</div></div></div>
+      <div class="step anim d4"><div class="step-ln"><div class="step-n">🤝</div><div class="step-c"></div></div><div class="step-cnt"><div class="step-t">4. Formalização Legal <span style="color:var(--gray);font-weight:400;font-size:0.75rem">(semana 4-6)</span></div><div class="step-d">Contrato, criação da entidade, transferência de IP</div></div></div>
+      <div class="step anim d5"><div class="step-ln"><div class="step-n">🚀</div><div class="step-c"></div></div><div class="step-cnt"><div class="step-t">5. Kick-off <span style="color:var(--gray);font-weight:400;font-size:0.75rem">(mês 2)</span></div><div class="step-d">CTO full-time, onboarding do time, início do roadmap Q1</div></div></div>
+    </div>
+    <a class="cta-btn anim d6" href="mailto:ciro@ciroarendt.com?subject=Reunião codrsync × Inventeer">Agendar Reunião</a>
+  </div>
+</section>
+
+<!-- S16: ENCERRAMENTO -->
+<section id="s16">
+  <div class="slide-inner">
+    <div class="anim d1" style="overflow:hidden;display:inline-block">
+      <p class="closing-h tw" id="tw">Separados, temos potencial. Juntos, temos um negócio.</p>
+    </div>
+    <div class="logos-row anim d3">
+      <span class="lb cs">codrsync</span>
+      <span class="lp">×</span>
+      <span class="lb iv">Inventeer</span>
+    </div>
+    <div class="contact anim d4">
+      <a href="mailto:ciro@ciroarendt.com">ciro@ciroarendt.com</a> ·
+      +55 41 992 435 521 ·
+      <a href="https://codrsync.dev" target="_blank">codrsync.dev</a>
+    </div>
+    <div class="anim d5" style="margin-top:18px"><span class="badge bg">Confidencial — Fevereiro 2026</span></div>
+    <div class="anim d6" style="margin-top:26px;font-size:0.72rem;color:rgba(255,255,255,0.22)">Use o botão de download no topo para baixar esta apresentação como ZIP</div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var TOTAL = 16;
+  var slides = [].slice.call(document.querySelectorAll('section'));
+  var current = 0;
+
+  // Build nav dots
+  var dotsEl = document.getElementById('nav-dots');
+  slides.forEach(function(_, i){
+    var b = document.createElement('button');
+    b.className = 'dot' + (i===0?' active':'');
+    b.title = 'Slide '+(i+1);
+    b.addEventListener('click', function(){ goTo(i); });
+    dotsEl.appendChild(b);
+  });
+
+  function updateUI(idx){
+    current = idx;
+    document.getElementById('slide-counter').textContent = 'Slide '+(idx+1)+' de '+TOTAL;
+    document.getElementById('progress-bar').style.width = ((idx+1)/TOTAL*100)+'%';
+    dotsEl.querySelectorAll('.dot').forEach(function(d,i){ d.classList.toggle('active', i===idx); });
+  }
+
+  function goTo(idx){
+    idx = Math.max(0, Math.min(TOTAL-1, idx));
+    slides[idx].scrollIntoView({behavior:'smooth'});
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); goTo(current+1); }
+    if(e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); goTo(current-1); }
+  });
+
+  // Touch swipe
+  var ty = 0;
+  document.addEventListener('touchstart', function(e){ ty = e.touches[0].clientY; },{passive:true});
+  document.addEventListener('touchend', function(e){
+    var dy = ty - e.changedTouches[0].clientY;
+    if(Math.abs(dy)>50) goTo(current+(dy>0?1:-1));
+  },{passive:true});
+
+  // Slide detection
+  var slideObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && e.intersectionRatio > 0.5){
+        updateUI(slides.indexOf(e.target));
+      }
+    });
+  },{threshold:0.5});
+  slides.forEach(function(s){ slideObs.observe(s); });
+
+  // Animation observer
+  var triggered = {};
+  var animObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        var sid = e.target.closest('section') ? e.target.closest('section').id : null;
+        if(sid && !triggered[sid]){
+          triggered[sid] = true;
+          triggerSlide(sid);
+        }
+        animObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.anim').forEach(function(el){ animObs.observe(el); });
+
+  function triggerSlide(id){
+    // S4: bar fills
+    if(id==='s4'){
+      document.querySelectorAll('#s4 .bar-fill').forEach(function(b){
+        b.style.width = b.dataset.w;
+      });
+    }
+    // S5: timeline fill
+    if(id==='s5'){
+      setTimeout(function(){ document.getElementById('tl-fill').style.width='80%'; }, 600);
+    }
+    // S6: arrows
+    if(id==='s6'){
+      document.querySelectorAll('#s6 .fa').forEach(function(a,i){
+        setTimeout(function(){ a.classList.add('vis'); }, 300+i*150);
+      });
+    }
+    // S7: donut
+    if(id==='s7'){
+      var C = 2*Math.PI*70; // ~439.8
+      var ciro = C*0.55;
+      var inv  = C*0.45;
+      var dc = document.getElementById('d-ciro');
+      var di = document.getElementById('d-inv');
+      if(dc) setTimeout(function(){
+        dc.style.strokeDasharray = ciro+' '+(C-ciro);
+        dc.style.strokeDashoffset = '0';
+      },300);
+      if(di) setTimeout(function(){
+        di.style.strokeDasharray = inv+' '+(C-inv);
+        di.style.strokeDashoffset = -ciro;
+      },600);
+    }
+    // S9: vertical bars
+    if(id==='s9'){
+      document.querySelectorAll('#s9 .vb').forEach(function(b,i){
+        setTimeout(function(){ b.style.height = b.dataset.h; }, 300+i*150);
+      });
+    }
+    // S10: roadmap items
+    if(id==='s10'){
+      document.querySelectorAll('#s10 .rmi').forEach(function(item,i){
+        setTimeout(function(){ item.classList.add('show'); }, 400+i*100);
+      });
+    }
+    // S16: typewriter
+    if(id==='s16'){
+      var tw = document.getElementById('tw');
+      if(tw) tw.classList.add('run');
+    }
+  }
+
+  updateUI(0);
+})();
+</script>
+</body>
+</html>

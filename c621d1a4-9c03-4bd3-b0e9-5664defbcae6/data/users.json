@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "admin-001",
+      "email": "admin@codrsync.dev",
+      "password": "$2b$10$i7LK4yql5vWfvbj1lg4ofOllyyR5IePdBMxlJtas4ym6pBfHVWIki",
+      "name": "Admin",
+      "role": "admin",
+      "createdAt": "2026-02-26T12:18:20.447Z",
+      "lastLogin": "2026-02-26T12:19:43.829Z"
+    },
+    {
+      "id": "d57f1016-7f43-4070-b718-ac5c1d80157e",
+      "email": "maycon@inventeer.tech",
+      "password": "$2b$10$z3sxGDUsPSp/hNHBcNfrp.U/eldOS2y1mJrNVtkue3X01m6.8g.Re",
+      "name": "Maycon",
+      "role": "viewer",
+      "createdAt": "2026-02-26T14:01:24.010Z",
+      "lastLogin": "2026-02-26T14:01:32.155Z"
+    }
+  ]
+}
