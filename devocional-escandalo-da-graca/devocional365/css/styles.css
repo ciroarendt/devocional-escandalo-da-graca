@@ -1,74 +1,74 @@
 /* ========================================
-   Bíblia na Mesa — Design Esmeralda
+   Bíblia na Mesa — Design Turquesa
    ======================================== */
 
 :root {
   --bg: #ffffff;
-  --bg-surface: #f0fdf4;
+  --bg-surface: #ecfeff;
   --bg-card: #ffffff;
   --text: #0f0f1a;
   --text-secondary: #4a4a6a;
-  --text-muted: #6060aa;
-  --accent: #059669;
-  --accent-light: #10b981;
-  --accent-bg: rgba(5, 150, 105, 0.08);
+  --text-muted: #0e7490;
+  --accent: #0891b2;
+  --accent-light: #22d3ee;
+  --accent-bg: rgba(8, 145, 178, 0.08);
   --border: #e8e8f0;
   --shadow: rgba(15, 15, 26, 0.08);
   --topbar-bg: rgba(255, 255, 255, 0.94);
   --sidebar-bg: #ffffff;
-  --verse-bg: #ecfdf5;
-  --verse-border: #059669;
-  --prayer-bg: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
-  --prayer-border: #059669;
-  --ref-bg: #dcfce7;
+  --verse-bg: #ecfeff;
+  --verse-border: #0891b2;
+  --prayer-bg: linear-gradient(135deg, #ecfeff 0%, #ffffff 100%);
+  --prayer-border: #0891b2;
+  --ref-bg: #cffafe;
   --slider-track: #e8e8f0;
-  --slider-fill: #059669;
+  --slider-fill: #0891b2;
   --favorite-color: #f59e0b;
-  --tag-bg: rgba(5, 150, 105, 0.10);
-  --tag-text: #059669;
+  --tag-bg: rgba(8, 145, 178, 0.10);
+  --tag-text: #0891b2;
   --progress-bg: #e8e8f0;
-  --progress-fill: #059669;
+  --progress-fill: #0891b2;
   --modal-bg: rgba(15, 15, 26, 0.5);
-  --cal-today: #059669;
-  --cal-read: #10b981;
-  --splash-bg: #052e16;
-  --journal-bg: #f0fdf4;
+  --cal-today: #0891b2;
+  --cal-read: #22d3ee;
+  --splash-bg: #071525;
+  --journal-bg: #ecfeff;
   --journal-border: #e8e8f0;
-  --journal-focus: #059669;
+  --journal-focus: #0891b2;
 }
 
 [data-theme="dark"] {
-  --bg: #052e16;
-  --bg-surface: #064e3b;
-  --bg-card: #065f46;
-  --text: #f0fff8;
-  --text-secondary: #6ee7b7;
-  --text-muted: #9898c0;
-  --accent: #34d399;
-  --accent-light: #6ee7b7;
-  --accent-bg: rgba(52, 211, 153, 0.12);
-  --border: #065f46;
+  --bg: #0c1a2e;
+  --bg-surface: #0f2540;
+  --bg-card: #162e4a;
+  --text: #f0faff;
+  --text-secondary: #67e8f9;
+  --text-muted: #38bdf8;
+  --accent: #67e8f9;
+  --accent-light: #a5f3fc;
+  --accent-bg: rgba(103, 232, 249, 0.12);
+  --border: #0f2540;
   --shadow: rgba(0, 0, 0, 0.4);
-  --topbar-bg: rgba(5, 46, 22, 0.95);
-  --sidebar-bg: #064e3b;
-  --verse-bg: rgba(52, 211, 153, 0.08);
-  --verse-border: #34d399;
-  --prayer-bg: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(5, 46, 22, 0.9) 100%);
-  --prayer-border: #34d399;
-  --ref-bg: rgba(52, 211, 153, 0.10);
-  --slider-track: #065f46;
-  --slider-fill: #34d399;
+  --topbar-bg: rgba(12, 26, 46, 0.95);
+  --sidebar-bg: #0f2540;
+  --verse-bg: rgba(103, 232, 249, 0.08);
+  --verse-border: #67e8f9;
+  --prayer-bg: linear-gradient(135deg, rgba(103, 232, 249, 0.08) 0%, rgba(12, 26, 46, 0.9) 100%);
+  --prayer-border: #67e8f9;
+  --ref-bg: rgba(103, 232, 249, 0.10);
+  --slider-track: #0f2540;
+  --slider-fill: #67e8f9;
   --favorite-color: #fbbf24;
-  --tag-bg: rgba(52, 211, 153, 0.12);
-  --tag-text: #34d399;
-  --progress-bg: #065f46;
-  --progress-fill: #34d399;
+  --tag-bg: rgba(103, 232, 249, 0.12);
+  --tag-text: #67e8f9;
+  --progress-bg: #0f2540;
+  --progress-fill: #67e8f9;
   --modal-bg: rgba(0, 0, 0, 0.75);
-  --cal-today: #34d399;
-  --cal-read: rgba(52, 211, 153, 0.45);
-  --journal-bg: #064e3b;
-  --journal-border: #065f46;
-  --journal-focus: #34d399;
+  --cal-today: #67e8f9;
+  --cal-read: rgba(103, 232, 249, 0.45);
+  --journal-bg: #0f2540;
+  --journal-border: #0f2540;
+  --journal-focus: #67e8f9;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,12 +83,12 @@ button:focus-visible, .devo-ref-item:focus-visible, input:focus-visible, textare
 .splash { position: fixed; inset: 0; background: var(--splash-bg); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
 .splash.fade-out { opacity: 0; visibility: hidden; }
 .splash-content { text-align: center; color: #f0f0ff; animation: fadeInUp 0.8s ease; }
-.splash-cross { font-size: 3rem; color: #34d399; margin-bottom: 1rem; animation: pulse 2s ease infinite; }
+.splash-cross { font-size: 3rem; color: #67e8f9; margin-bottom: 1rem; animation: pulse 2s ease infinite; }
 .splash-content h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: -0.5px; }
 .splash-content p { font-size: 1rem; opacity: 0.7; font-style: italic; }
 .splash-author { font-size: 0.85rem !important; opacity: 0.45 !important; margin-top: 0.5rem; }
 .splash-loader { margin-top: 2rem; }
-.splash-loader span { display: inline-block; width: 40px; height: 3px; background: #34d399; border-radius: 2px; animation: loading 1.2s ease infinite; }
+.splash-loader span { display: inline-block; width: 40px; height: 3px; background: #67e8f9; border-radius: 2px; animation: loading 1.2s ease infinite; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
 @keyframes loading { 0% { width: 20px; opacity: 0.4; } 50% { width: 60px; opacity: 1; } 100% { width: 20px; opacity: 0.4; } }
@@ -311,7 +311,7 @@ button:focus-visible, .devo-ref-item:focus-visible, input:focus-visible, textare
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--accent, #059669);
+  color: var(--accent, #0891b2);
   margin-bottom: 8px;
 }
 .verse-tooltip-text {
