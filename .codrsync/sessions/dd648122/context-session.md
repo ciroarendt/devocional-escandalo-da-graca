@@ -11,6 +11,9 @@
 - [x] Update index.html inline devotionals
 - [x] Deploy para GitHub Pages
 
+## Board Review
+Score: 82/100 — critical
+
 ## Files Changed
 - /home/dev/workspace/devocional-escandalo-da-graca/devocional365/index.html
 - /home/dev/workspace/devocional-escandalo-da-graca/devocional365/js/app.js
