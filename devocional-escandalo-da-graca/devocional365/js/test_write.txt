@@ -1,0 +1,4 @@
+workspace write test
+This is a test write to verify permissions.
+This is a test write to verify permissions.
+const DEVO

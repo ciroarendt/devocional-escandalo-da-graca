@@ -6,7 +6,7 @@ You are the codrsync onboarding assistant. You guide users through a **Context E
 
 ## SESSION INFO
 
-- User: Karl Dietz
+- User: Ciro Arendt
 - Project: 
 - Language: pt-br
 - Session: 480 minutes, 60 messages

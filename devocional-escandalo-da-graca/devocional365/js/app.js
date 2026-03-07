@@ -134,21 +134,21 @@
           <div class="journal-box">
             <div class="journal-box-header">
               <span class="journal-box-number">1</span>
-              <label class="journal-label">Escreva 3 coisas que você aprendeu hoje</label>
+              <label class="journal-label">Registre 3 coisas que você aprendeu hoje</label>
             </div>
             <textarea class="journal-textarea" data-key="learned" placeholder="1. &#10;2. &#10;3. "></textarea>
           </div>
           <div class="journal-box">
             <div class="journal-box-header">
               <span class="journal-box-number">2</span>
-              <label class="journal-label">O que o Espírito Santo está me falando</label>
+              <label class="journal-label">O que o Espírito Santo te falou hoje</label>
             </div>
             <textarea class="journal-textarea" data-key="spirit" placeholder="Escreva aqui o que o Espírito Santo está falando ao seu coração..."></textarea>
           </div>
           <div class="journal-box">
             <div class="journal-box-header">
               <span class="journal-box-number">3</span>
-              <label class="journal-label">Registre 3 palavras-chave que definem a devocional deste dia</label>
+              <label class="journal-label">Resuma este devocional em 3 palavras chaves</label>
             </div>
             <textarea class="journal-textarea" data-key="keywords" placeholder="Ex: Graça, Identidade, Missão"></textarea>
           </div>
