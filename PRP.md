@@ -1,135 +1,96 @@
 <thinking>
-Now I have a clear picture. The task is:
+Now I have a clear picture of everything that needs to change. Let me design the plan for the rebrand:
 
-1. **Remove "Karl Dietz" references** from ALL devotionals (not just January) - 232 mentions across the entire file
-2. **Rewrite those passages in first person plural** ("nós/nossa" perspective)
-3. **Expand January devotionals under 300 words** (23 devocionais, min 257 words, need to reach 300+)
+1. **Name change**: "Escândalo da Graça" → "Bíblia na Mesa" everywhere
+2. **Color scheme**: Modern, vibrant, with minimalist details
 
-Key observations about Day 14 (Dia 14 - "Arrependimento É Atualizar a Mente"):
-- 7 paragraphs, total ~292 words
-- NO Karl Dietz mentions (this is a good example of the style without Karl)
-- The writing style is very good: conversational, first-person-adjacent, biblical examples
-- Already close to 300 words, just needs a bit more
+For "Bíblia na Mesa" (Bible on the Table), I should pick a color scheme that:
+- Feels warm, inviting, and vibrant
+- Has a "table" / gathering / community feel
+- Suggests the Bible as something accessible, not intimidating
+- Is modern and fresh
 
-For the Karl Dietz rewrite patterns:
-- "Karl Dietz nos lembra que" → "Somos lembrados de que" / "Lembramos que"
-- "Karl Dietz ensina que" → "Aprendemos que" / "Sabemos que"
-- "A verdade em Karl Dietz revela que" → "Descobrimos que" / "A Bíblia revela que"
-- "Karl Dietz explica que" → "Entendemos que"
-- "Karl Dietz nos mostrou que" → "Reconhecemos que" / "Temos descoberto que"
-- "Karl Dietz resume a essência" → "A essência disso é"
-- "A verdade em Karl Dietz nos mostra que" → "A Escritura nos mostra que"
+I'm going to propose a warm amber/golden + rich teal or coral palette. Something like:
+- Primary: A warm vibrant coral or amber
+- OR: Deep emerald with gold accents
 
-**Implementation strategy:**
+Actually, for "Bíblia na Mesa" the concept is about the Bible being present at the table, in everyday life. A warm palette works well - maybe:
+- **Warm Amber + Deep Brown**: `#d97706` (amber), `#92400e` (deep brown)
+- Or **Vibrant Orange-Red + Deep Burgundy**: feels more energetic
+- Or **Coral + Teal**: Modern contrast combination
 
-Since there are 11 unique patterns and 232 total mentions, I can write a Python script that:
-1. Uses regex to find all Karl Dietz sentence patterns
-2. Replaces them with appropriate first-person-plural equivalents
-3. For January devotionals under 300 words, adds a new closing paragraph
+Let me go with something truly vibrant and modern:
+- Primary: `#e85d04` (vibrant orange-red/coral) → feels warm, inviting, energetic
+- Or: `#7c3aed` + `#f59e0b` - violet + amber (keeping spiritual feel but more vibrant)
 
-But for January expansion specifically, I need to be careful - Day 14 shows that the writing is already good style-wise, just needs more content. The challenge is that I can't generate AI content in a Python script directly.
+Actually, let me think about "moderna com cores vibrantes e detalhes minimalistas" - modern with vibrant colors and minimalist details.
 
-Wait - actually, looking at Day 14 example: 7 paragraphs at ~292 words total. Each paragraph is 35-49 words. To get to 300+ words, I just need 1 more paragraph or expand a couple of existing ones.
+I'll propose:
+- **Deep Emerald Green** as primary: `#059669` - represents life, growth, the living Word
+- **Gold/Amber accent**: `#f59e0b` - warmth, the light of the Word
+- **Dark teal background**: `#022c22` for dark mode (rich, lush)
+- White for light mode
 
-For January devotionals that are under 300 words, the strategy should be:
-1. First remove Karl Dietz mentions (which might reduce word count a bit)
-2. Then add a new paragraph if still under 300 words
+Or even more vibrant:
+- **Coral/Warm Red**: `#ef4444` → `#dc2626` as primary - bold, vibrant
+- Complemented with warm cream backgrounds
 
-But the expansion for January requires creative writing - I can't easily automate that. 
+Let me go with a bold, vibrant scheme:
+- **Primary**: `#16a34a` (vibrant green - life, growth, hope)
+- **Accent Light**: `#4ade80` (bright lime green)
+- **Dark Background**: `#052e16` (deep forest)
+- **Warm Gold**: `#fbbf24` for special highlights
 
-Let me think about this differently. The user wants:
-1. Remove Karl Dietz mentions - rewrite to first person plural
-2. Expand January devotionals to 300+ words
+Actually, the user said "moderna com cores vibrantes e detalhes minimalistas" - I think a truly bold, modern approach would be:
 
-For #1, I can do this with a Python script using regex patterns.
-For #2, I need to generate content. Since the devotionals.js is already very large, I think the approach should be:
-- Write a Python script that identifies which January devotionals are under 300 words
-- For those, generate a closing paragraph programmatically
+**Color Scheme: Coral + Deep Navy** (high energy, modern, vibrant)
+- Primary Accent: `#f97316` (vibrant orange) or `#ef4444` (coral red)
+- Dark Surface: `#0f172a` (deep slate navy) 
+- Gold highlight: `#fbbf24`
 
-OR... I could use Claude to generate the expansion. The challenge is that devotionals.js is 944KB and I can't pass that to Claude easily.
+OR:
 
-Actually, let me think about this more practically:
+**Color Scheme: Teal + Gold** (warm, inviting, modern)
+- Primary: `#0d9488` (teal)
+- Gold: `#f59e0b`
+- Dark: `#042f2e`
 
-**Step 1: Karl Dietz removal (regex script)**
-- This can be done with a Python script
-- 11 patterns → 11 replacement rules
-- Pure mechanical transformation
+I'll go with a vibrant but cohesive scheme:
+**Vibrant Amber-Orange + Deep Slate** (warm, energetic, modern):
+- Primary: `#f59e0b` (amber/golden - warm, inviting) 
+- Secondary: `#ea580c` (orange - vibrant)
+- Light mode bg: `#fffbeb` (warm cream)
+- Dark mode: `#1c1a16` (warm dark)
+- Text: `#1c1a16`
 
-**Step 2: January expansion**
-- I need to generate content for 23 devotionals
-- Each needs ~50-100 more words
-- I could write a Python script that adds a generic "call to action" paragraph based on the devotional's theme
+Actually, let me go with something really striking and modern for "Bíblia na Mesa":
 
-OR, I could write a separate Python script that generates a specific extra paragraph for each of the 23 January devotionals that need expansion, using the existing title and theme as context.
+**Deep Teal + Coral/Orange** palette:
+- Primary accent: `#0f766e` (teal/dark turquoise)
+- Accent light: `#14b8a6` (bright teal)
+- Special: `#f97316` (orange for warmth)
+- Light surface: `#f0fdfa` (very light teal)
+- Dark bg: `#042f2e` (deep teal)
+- Splash: `#022c22`
 
-Actually, looking at Day 14's example: the writing is conversational, direct, and doesn't need Karl Dietz at all. The expansion needed is just adding 1 more paragraph.
+This feels fresh, vibrant, and distinctly different from the current indigo.
 
-For the plan, I'll:
+OR even more vibrant:
+- Primary: `#7c3aed` (purple-violet) + `#f59e0b` (amber gold) - spiritual + warmth
+- This combination is very vibrant and modern
 
-1. **Script 1** - Karl Dietz removal: regex-based Python script
-2. **Script 2** - January expansion: Python script that adds themed paragraphs to under-300 devotionals
+Let me finalize: **Verde Esmeralda + Dourado** - very Brazilian, warm, vibrant:
+- Primary: `#059669` (emerald green)
+- Accent light: `#10b981` (lighter emerald)  
+- Gold highlight: `#f59e0b` (golden amber)
+- Light bg: `#ecfdf5` (mint cream)
+- Dark bg: `#052e16` (deep forest green)
+- Splash: `#052e16`
+- Favorite: `#f59e0b` (gold instead of red)
 
-For Script 2, I'll need to embed the expansion paragraphs directly into the Python script. Since this is creative content, I'll need to write them as part of the plan.
+This says "the living Word, alive and present at the table."
 
-Let me look at the scope:
-- 23 January devotionals under 300 words
-- Need to add ~50-100 words each
-- Each devotional has a title and theme that guides the content
-
-I'll include the expansion paragraphs as embedded data in the Python script.
-
-Now, for the plan file:
-
-**Plan:**
-
-1. Create `scripts/patch_devotionals.py`:
-   - Step 1: Load devotionals.js
-   - Step 2: For each devotional, apply Karl Dietz regex replacements
-   - Step 3: For January devotionals under 300 words, append an expansion paragraph
-   - Step 4: Write back to devotionals.js
-
-The Karl Dietz patterns (based on our analysis):
-```python
-REPLACEMENTS = [
-    ("Karl Dietz nos lembra que", "Precisamos nos lembrar de que"),
-    ("A verdade em Karl Dietz nos lembra que", "Precisamos nos lembrar de que"),
-    ("Karl Dietz ensina que", "Aprendemos que"),
-    ("A verdade em Karl Dietz ensina que", "Aprendemos que"),
-    ("Karl Dietz explica que", "Entendemos que"),
-    ("A verdade em Karl Dietz explica que", "Entendemos que"),
-    ("A verdade em Karl Dietz revela que", "Descobrimos que"),
-    ("Karl Dietz revela que", "Descobrimos que"),
-    ("A verdade em Karl Dietz nos mostra que", "A Escritura nos mostra que"),
-    ("Karl Dietz nos mostrou que", "Reconhecemos que"),
-    ("A verdade em Karl Dietz resume a essência", "Resumindo: a essência"),
-    ("Karl Dietz resume a essência", "Resumindo: a essência"),
-]
-```
-
-For the January expansion - I need to provide specific paragraphs for each of the 23 under-300-word devotionals. This is the creative part.
-
-Since I don't know which specific days are under 300 after Karl Dietz cleanup, I should:
-1. Run the Karl Dietz cleanup first
-2. Re-count words
-3. Then expand those still under 300
-
-Let me plan accordingly.
-
-Actually, from the previous analysis:
-- 23 January devotionals are under 300 words
-- The minimum is 257 words (Day 14)
-- The Karl Dietz paragraphs being removed might reduce word count slightly
-
-So I need to:
-1. Remove Karl Dietz references (may remove ~15-20 words per devotional where they appear)
-2. Add expansion paragraphs to January devotionals that end up under 300 words
-
-For the expansion paragraphs, I'll write them as part of the Python script - they need to be thematically relevant. Given that all January devotionals are about "A Natureza de Deus" (The Nature of God), I can write generic but thematically appropriate closing paragraphs.
-
-Let me now write the plan. This is a significant task that involves:
-1. A Python script for Karl Dietz removal (~50 lines)
-2. A Python script for January expansion (~100 lines with embedded content)
-3. Git commit and push
-
-Let me write the final plan to the plan file.
+Now let me write the plan file.
 </thinking>
+
+Agora tenho tudo. Vou escrever o plano de rebranding.
