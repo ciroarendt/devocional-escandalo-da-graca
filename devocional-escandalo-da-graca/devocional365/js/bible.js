@@ -1,125 +1,164 @@
 /**
- * bible.js — Integração com Bible API + Sistema de Tooltips
- * Devocional 365 · Escândalo da Graça
+ * bible.js — Bíblia NVT via bolls.life API + Sistema de Tooltips
+ * Bíblia na Mesa · 365 Devocionais
+ *
+ * API: https://bolls.life/get-verse/NVT/{book_num}/{chapter}/{verse}/
  */
 
-// ─── Mapa de livros PT-BR → nome aceito pela API ───────────────────────────
-const BOOK_MAP = {
-  'genesis': 'genesis', 'gênesis': 'genesis',
-  'exodo': 'exodus', 'êxodo': 'exodus',
-  'levitico': 'leviticus', 'levítico': 'leviticus',
-  'numeros': 'numbers', 'números': 'numbers',
-  'deuteronomio': 'deuteronomy', 'deuteronômio': 'deuteronomy',
-  'josue': 'joshua', 'josué': 'joshua',
-  'juizes': 'judges', 'juízes': 'judges',
-  'rute': 'ruth',
-  '1 samuel': '1 samuel', '1samuel': '1 samuel',
-  '2 samuel': '2 samuel', '2samuel': '2 samuel',
-  '1 reis': '1 kings', '1reis': '1 kings',
-  '2 reis': '2 kings', '2reis': '2 kings',
-  '1 cronicas': '1 chronicles', '1 crônicas': '1 chronicles',
-  '2 cronicas': '2 chronicles', '2 crônicas': '2 chronicles',
-  'esdras': 'ezra',
-  'neemias': 'nehemiah',
-  'ester': 'esther',
-  'jo': 'job', 'jó': 'job',
-  'salmos': 'psalms', 'salmo': 'psalms',
-  'proverbios': 'proverbs', 'provérbios': 'proverbs',
-  'eclesiastes': 'ecclesiastes',
-  'cantares': 'song of solomon',
-  'isaias': 'isaiah', 'isaías': 'isaiah',
-  'jeremias': 'jeremiah',
-  'lamentacoes': 'lamentations', 'lamentações': 'lamentations',
-  'ezequiel': 'ezekiel',
-  'daniel': 'daniel',
-  'oseias': 'hosea', 'oséias': 'hosea',
-  'joel': 'joel',
-  'amos': 'amos', 'amós': 'amos',
-  'obadias': 'obadiah',
-  'jonas': 'jonah',
-  'miqueias': 'micah',
-  'naum': 'nahum',
-  'habacuque': 'habakkuk',
-  'sofonias': 'zephaniah',
-  'ageu': 'haggai',
-  'zacarias': 'zechariah',
-  'malaquias': 'malachi',
-  'mateus': 'matthew',
-  'marcos': 'mark',
-  'lucas': 'luke',
-  'joao': 'john', 'joão': 'john',
-  'atos': 'acts',
-  'romanos': 'romans',
-  '1 corintios': '1 corinthians', '1 coríntios': '1 corinthians',
-  '2 corintios': '2 corinthians', '2 coríntios': '2 corinthians',
-  'galatas': 'galatians', 'gálatas': 'galatians',
-  'efesios': 'ephesians', 'efésios': 'ephesians',
-  'filipenses': 'philippians',
-  'colossenses': 'colossians',
-  '1 tessalonicenses': '1 thessalonians',
-  '2 tessalonicenses': '2 thessalonians',
-  '1 timoteo': '1 timothy', '1 timóteo': '1 timothy',
-  '2 timoteo': '2 timothy', '2 timóteo': '2 timothy',
-  'tito': 'titus',
-  'filemom': 'philemon',
-  'hebreus': 'hebrews',
-  'tiago': 'james',
-  '1 pedro': '1 peter',
-  '2 pedro': '2 peter',
-  '1 joao': '1 john', '1 joão': '1 john',
-  '2 joao': '2 john', '2 joão': '2 john',
-  '3 joao': '3 john', '3 joão': '3 john',
-  'judas': 'jude',
-  'apocalipse': 'revelation'
+// ─── Mapa de livros PT-BR → número do livro (ordem canônica) ──────────────
+const BOOK_NUM = {
+  // Antigo Testamento
+  'genesis': 1, 'gênesis': 1,
+  'exodo': 2, 'êxodo': 2,
+  'levitico': 3, 'levítico': 3,
+  'numeros': 4, 'números': 4,
+  'deuteronomio': 5, 'deuteronômio': 5,
+  'josue': 6, 'josué': 6,
+  'juizes': 7, 'juízes': 7,
+  'rute': 8,
+  '1 samuel': 9, '1samuel': 9,
+  '2 samuel': 10, '2samuel': 10,
+  '1 reis': 11, '1reis': 11,
+  '2 reis': 12, '2reis': 12,
+  '1 cronicas': 13, '1 crônicas': 13,
+  '2 cronicas': 14, '2 crônicas': 14,
+  'esdras': 15,
+  'neemias': 16,
+  'ester': 17,
+  'jo': 18, 'jó': 18,
+  'salmos': 19, 'salmo': 19,
+  'proverbios': 20, 'provérbios': 20,
+  'eclesiastes': 21,
+  'cantares': 22, 'cantares dos cantares': 22,
+  'isaias': 23, 'isaías': 23,
+  'jeremias': 24,
+  'lamentacoes': 25, 'lamentações': 25,
+  'ezequiel': 26,
+  'daniel': 27,
+  'oseias': 28, 'oséias': 28,
+  'joel': 29,
+  'amos': 30, 'amós': 30,
+  'obadias': 31,
+  'jonas': 32,
+  'miqueias': 33,
+  'naum': 34,
+  'habacuque': 35,
+  'sofonias': 36,
+  'ageu': 37,
+  'zacarias': 38,
+  'malaquias': 39,
+  // Novo Testamento
+  'mateus': 40,
+  'marcos': 41,
+  'lucas': 42,
+  'joao': 43, 'joão': 43,
+  'atos': 44,
+  'romanos': 45,
+  '1 corintios': 46, '1 coríntios': 46,
+  '2 corintios': 47, '2 coríntios': 47,
+  'galatas': 48, 'gálatas': 48,
+  'efesios': 49, 'efésios': 49,
+  'filipenses': 50,
+  'colossenses': 51,
+  '1 tessalonicenses': 52,
+  '2 tessalonicenses': 53,
+  '1 timoteo': 54, '1 timóteo': 54,
+  '2 timoteo': 55, '2 timóteo': 55,
+  'tito': 56,
+  'filemom': 57,
+  'hebreus': 58,
+  'tiago': 59,
+  '1 pedro': 60,
+  '2 pedro': 61,
+  '1 joao': 62, '1 joão': 62,
+  '2 joao': 63, '2 joão': 63,
+  '3 joao': 64, '3 joão': 64,
+  'judas': 65,
+  'apocalipse': 66
 };
 
 const verseCache = new Map();
 
-function normalizeReference(refText) {
-  const cleaned = refText.trim().toLowerCase();
-  let bestMatch = null;
-  let bestLen = 0;
+/**
+ * Faz o parse de uma referência como "João 3:16" ou "Romanos 8:28-30"
+ * Retorna { bookNum, chapter, verse } ou null se não reconhecido.
+ */
+function parseReference(refText) {
+  const raw = refText.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos para match
+    .replace(/[.,;]/g, '');
 
-  for (const [ptName, apiName] of Object.entries(BOOK_MAP)) {
-    if (cleaned.startsWith(ptName) && ptName.length > bestLen) {
-      bestMatch = { ptName, apiName };
-      bestLen = ptName.length;
+  // tenta identificar o livro (do mais longo para o mais curto)
+  const keys = Object.keys(BOOK_NUM).sort((a, b) => b.length - a.length);
+  let bookNum = null;
+  let rest = '';
+
+  for (const key of keys) {
+    const normalKey = key.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (raw.startsWith(normalKey)) {
+      bookNum = BOOK_NUM[key];
+      rest = raw.slice(normalKey.length).trim();
+      break;
     }
   }
 
-  if (!bestMatch) return refText;
-  const rest = cleaned.slice(bestMatch.ptName.length).trim();
-  return `${bestMatch.apiName} ${rest}`;
+  if (!bookNum) return null;
+
+  // extrai capítulo e versículo: "3:16", "3.16", "3 16"
+  const match = rest.match(/^(\d+)[:.\s](\d+)/);
+  if (!match) return null;
+
+  return { bookNum, chapter: parseInt(match[1]), verse: parseInt(match[2]) };
 }
 
+/**
+ * Busca versículo na NVT via bolls.life.
+ * Se a referência tiver intervalo (ex: 8:28-30), busca só o primeiro versículo.
+ */
 async function fetchVerse(refText) {
   const cacheKey = refText.trim();
   if (verseCache.has(cacheKey)) return verseCache.get(cacheKey);
 
-  const normalized = normalizeReference(cacheKey);
+  const parsed = parseReference(cacheKey);
+
+  if (!parsed) {
+    const result = { text: 'Referência não reconhecida.', ref: cacheKey, translation: 'NVT', error: true };
+    verseCache.set(cacheKey, result);
+    return result;
+  }
+
+  const { bookNum, chapter, verse } = parsed;
+  const url = `https://bolls.life/get-verse/NVT/${bookNum}/${chapter}/${verse}/`;
 
   try {
-    const url = `https://bible-api.com/${encodeURIComponent(normalized)}?translation=almeida`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    let text = '';
-    if (data.text) {
-      text = data.text.trim().replace(/\n/g, ' ');
-    } else if (data.verses && data.verses.length > 0) {
-      text = data.verses.map(v => v.text.trim()).join(' ');
-    } else {
-      text = 'Versículo não disponível nesta tradução.';
-    }
+    const text = data.text
+      ? data.text
+          .replace(/<br\s*\/?>/gi, ' ')  // converte <br> em espaço (ex: Salmos)
+          .replace(/<[^>]+>/g, '')        // remove qualquer outro HTML
+          .replace(/\s+/g, ' ')
+          .trim()
+      : 'Versículo não disponível na NVT.';
 
-    const result = { text, ref: data.reference || cacheKey, translation: 'Almeida Revisada' };
+    const result = { text, ref: cacheKey, translation: 'NVT' };
     verseCache.set(cacheKey, result);
     return result;
   } catch (err) {
-    return { text: 'Não foi possível carregar o versículo. Verifique sua conexão.', ref: cacheKey, translation: '', error: true };
+    const result = {
+      text: 'Não foi possível carregar o versículo. Verifique sua conexão.',
+      ref: cacheKey,
+      translation: 'NVT',
+      error: true
+    };
+    verseCache.set(cacheKey, result);
+    return result;
   }
 }
+
+// ─── Tooltip ───────────────────────────────────────────────────────────────
 
 function positionTooltip(tooltip, anchor) {
   const rect = anchor.getBoundingClientRect();
