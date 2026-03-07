@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="description" content="Devocional 365 dias — Baseado no livro O Escândalo da Graça de Karl Dietz">
-  <meta name="theme-color" content="#0f0e2b">
-  <title>Devocional 365 — O Escândalo da Graça</title>
+  <meta name="description" content="Bíblia na Mesa — 365 devocionais para transformar sua caminhada com Deus">
+  <meta name="theme-color" content="#052e16">
+  <title>Bíblia na Mesa — 365 Devocionais</title>
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,9 +18,8 @@
   <div id="splash" class="splash">
     <div class="splash-content">
       <div class="splash-cross">✦</div>
-      <h1>Devocional 365</h1>
-      <p>O Escândalo da Graça</p>
-      <p class="splash-author">Baseado na obra de Karl Dietz</p>
+      <h1>Bíblia na Mesa</h1>
+      <p>365 dias na Presença de Deus</p>
       <div class="splash-loader"><span></span></div>
     </div>
   </div>
@@ -50,15 +49,15 @@
     <!-- Side Menu -->
     <div id="sidebar" class="sidebar">
       <div class="sidebar-overlay" id="sidebar-overlay"></div>
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav" role="dialog" aria-modal="true" aria-label="Menu de navegação">
         <div class="sidebar-header">
-          <h2>Devocional 365</h2>
+          <h2>Bíblia na Mesa</h2>
           <button id="btn-close-menu" class="topbar-btn" aria-label="Fechar menu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
         <div class="sidebar-search">
-          <input type="text" id="search-input" placeholder="Buscar devocional..." autocomplete="off">
+          <input type="text" id="search-input" placeholder="Buscar devocional..." autocomplete="off" aria-label="Buscar devocional">
         </div>
         <div class="sidebar-section">
           <button class="sidebar-item" data-action="today">
@@ -94,14 +93,14 @@
           <button class="sidebar-item theme-item" data-month="11">Dezembro — Síntese</button>
         </div>
         <div class="sidebar-section sidebar-about">
-          <p>Baseado no livro <strong>"O Escândalo da Graça"</strong> de Karl Dietz</p>
-          <p class="sidebar-small">Editora Alínea, 2025</p>
+          <p>Um devocional para cada dia do ano</p>
+          <p class="sidebar-small">bibliaamesa.com.br</p>
         </div>
       </nav>
     </div>
 
     <!-- Calendar Modal -->
-    <div id="calendar-modal" class="modal hidden">
+    <div id="calendar-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Calendário de devocionais">
       <div class="modal-backdrop" data-close="calendar"></div>
       <div class="modal-content calendar-content">
         <div class="calendar-header">
@@ -117,7 +116,7 @@
     </div>
 
     <!-- Favorites Modal -->
-    <div id="favorites-modal" class="modal hidden">
+    <div id="favorites-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Devocionais favoritos">
       <div class="modal-backdrop" data-close="favorites"></div>
       <div class="modal-content">
         <div class="modal-header">
@@ -734,7 +733,7 @@ const DEVOTIONALS = [{"day":1,"month":"Janeiro","theme":"A Natureza de Deus","ti
 })();
 
   </script>
-  <div id="verse-tooltip">
+  <div id="verse-tooltip" role="tooltip" aria-live="polite">
     <div class="verse-tooltip-ref"></div>
     <div class="verse-tooltip-text"></div>
     <div class="verse-tooltip-badge"></div>

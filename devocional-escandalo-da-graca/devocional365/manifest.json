@@ -1,16 +1,16 @@
 {
-  "name": "Devocional 365 — O Escândalo da Graça",
-  "short_name": "Devocional 365",
-  "description": "365 devocionais diários baseados no livro O Escândalo da Graça de Karl Dietz",
+  "name": "Bíblia na Mesa",
+  "short_name": "Bíblia na Mesa",
+  "description": "365 devocionais diários para transformar sua caminhada com Deus",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0e2b",
-  "theme_color": "#0f0e2b",
+  "background_color": "#052e16",
+  "theme_color": "#052e16",
   "orientation": "portrait",
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230f0e2b' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='48' fill='%23818cf8'>365</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23052e16' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='48' fill='%2334d399'>365</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }

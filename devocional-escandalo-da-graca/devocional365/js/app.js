@@ -91,6 +91,13 @@
     updateUI(day);
   }
 
+  function escapeHTML(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+
   function renderDevotional(day) {
     const devo = DEVOTIONALS[day - 1];
     if (!devo) return;
@@ -102,17 +109,17 @@
         <div class="devo-day-badge">
           <span></span> Dia ${devo.day} de 365
         </div>
-        <div class="devo-theme-tag">${devo.theme}</div>
-        <h1 class="devo-title">${devo.title}</h1>
-        <div class="devo-date">${devo.date_label}</div>
+        <div class="devo-theme-tag">${escapeHTML(devo.theme)}</div>
+        <h1 class="devo-title">${escapeHTML(devo.title)}</h1>
+        <div class="devo-date">${escapeHTML(devo.date_label)}</div>
 
         <div class="devo-verse">
-          <p class="devo-verse-text">${devo.verse_text}</p>
-          <cite class="devo-verse-ref">${devo.verse_ref}</cite>
+          <p class="devo-verse-text">${escapeHTML(devo.verse_text)}</p>
+          <cite class="devo-verse-ref">${escapeHTML(devo.verse_ref)}</cite>
         </div>
 
         <div class="devo-body">
-          ${devo.paragraphs.map(p => `<p>${p}</p>`).join('')}
+          ${devo.paragraphs.map(p => `<p>${escapeHTML(p)}</p>`).join('')}
         </div>
 
         <div class="devo-divider"><span>✦</span></div>
@@ -120,13 +127,13 @@
         <div class="devo-refs">
           <h4>Saiba Mais</h4>
           <div class="devo-refs-list">
-            ${devo.references.map(r => `<span class="devo-ref-item">${r}</span>`).join('')}
+            ${devo.references.map(r => `<span class="devo-ref-item" tabindex="0" role="button" aria-label="Ver versículo ${escapeHTML(r)}">${escapeHTML(r)}</span>`).join('')}
           </div>
         </div>
 
         <div class="devo-prayer">
           <h4>Declaração de Fé</h4>
-          <p>${devo.prayer}<span class="amen">Amém.</span></p>
+          <p>${escapeHTML(devo.prayer)}<span class="amen">Amém.</span></p>
         </div>
 
         <div class="devo-journal">
