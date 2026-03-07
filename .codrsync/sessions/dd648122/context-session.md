@@ -19,7 +19,7 @@ Now I have a clear picture of everything that needs to change. Let me design the
 - [x] Deploy para GitHub Pages
 
 ## Board Review
-Score: 78/100 — critical
+Score: 76/100 — critical
 
 ## Files Changed
 - /home/dev/workspace/devocional-escandalo-da-graca/devocional365/index.html
@@ -28,9 +28,10 @@ Score: 78/100 — critical
 - devocional-escandalo-da-graca/devocional365/js/devotionals.js
 - /home/dev/workspace/devocional-escandalo-da-graca/index.html
 - devocional-escandalo-da-graca/devocional365/index.html
+- /home/dev/workspace/devocional-escandalo-da-graca/devocional365/css/styles.css
 
 ## Verification
 Passed: yes
 
 ## Git
-Last commit: 96cd3c0
+Last commit: 3a5233d
