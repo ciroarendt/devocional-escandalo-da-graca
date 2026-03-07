@@ -283,3 +283,76 @@ input, textarea { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-
   .reader { padding: 0; }
   body { background: #fff; color: #000; }
 }
+
+/* ─── Verse Tooltip ──────────────────────────────────────────────── */
+#verse-tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: 340px;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, #e8e8f0);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 32px rgba(15, 14, 43, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  font-family: 'Inter', sans-serif;
+}
+#verse-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+.verse-tooltip-ref {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent, #4f46e5);
+  margin-bottom: 8px;
+}
+.verse-tooltip-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text, #0f0f1a);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.verse-tooltip-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted, #8888aa);
+  background: var(--ref-bg, #f0efff);
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+}
+#verse-tooltip.tooltip-error .verse-tooltip-text {
+  color: var(--text-muted, #8888aa);
+  font-style: normal;
+}
+/* Cursor hint on refs */
+.devo-ref-item {
+  cursor: pointer;
+}
+/* Mobile bottom-sheet */
+@media (max-width: 640px) {
+  #verse-tooltip {
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    box-shadow: 0 -4px 32px rgba(15, 14, 43, 0.22);
+  }
+  #verse-tooltip.visible::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--border, #e8e8f0);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+}
