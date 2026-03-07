@@ -38,4 +38,4 @@ Score: 76/100 — critical
 Passed: yes
 
 ## Git
-Last commit: ecd9567
+Last commit: 6bd2904
