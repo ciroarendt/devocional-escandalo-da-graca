@@ -29,9 +29,13 @@ Score: 76/100 — critical
 - /home/dev/workspace/devocional-escandalo-da-graca/index.html
 - devocional-escandalo-da-graca/devocional365/index.html
 - /home/dev/workspace/devocional-escandalo-da-graca/devocional365/css/styles.css
+- /home/dev/workspace/devocional-escandalo-da-graca/media-kit/post-feed.html
+- /home/dev/workspace/devocional-escandalo-da-graca/media-kit/stories.html
+- /home/dev/workspace/devocional-escandalo-da-graca/media-kit/banner-wide.html
+- /home/dev/workspace/devocional-escandalo-da-graca/media-kit/index.html
 
 ## Verification
 Passed: yes
 
 ## Git
-Last commit: 3a5233d
+Last commit: ecd9567
