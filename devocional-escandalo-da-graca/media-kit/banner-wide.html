@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Kit — Banner Wide | Bíblia na Mesa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #1a1a1a; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 40px; }
+  h1 { font-family: 'Arial', sans-serif; font-size: 1rem; color: #6ee7b7; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+  .hint { font-family: 'Arial', sans-serif; font-size: 0.75rem; color: #6ee7b7; opacity: 0.7; text-align: center; margin-top: -30px; }
+
+  .banner-wrap { text-align: center; width: 100%; max-width: 760px; }
+  .banner-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 8px;
+  }
+
+  /* BANNER 1 — LinkedIn Cover / Twitter Header (aprox 6:1) */
+  .banner {
+    width: 100%;
+    max-width: 760px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  }
+
+  /* LinkedIn: 1584x396 → display 760x190 */
+  #b1 {
+    height: 190px;
+    background: linear-gradient(135deg, #052e16 0%, #064e3b 50%, #0d9488 100%);
+  }
+  #b1 .left-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #34d399, #f59e0b);
+  }
+  #b1 .cross {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.8rem;
+    color: #34d399;
+    opacity: 0.8;
+  }
+  #b1 .title-block {
+    position: absolute;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #b1 .eyebrow {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 4px;
+  }
+  #b1 .main-t {
+    font-family: 'Georgia', serif;
+    font-size: 2.2rem;
+    color: #fff;
+    line-height: 1.1;
+  }
+  #b1 .sub-t {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+  }
+  #b1 .divider-v {
+    position: absolute;
+    right: 280px;
+    top: 24px; bottom: 24px;
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+  }
+  #b1 .right-block {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  #b1 .pill-green {
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+  }
+  #b1 .tagline-r {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.5;
+    max-width: 220px;
+    text-align: right;
+  }
+  #b1 .url {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.62rem;
+    color: #34d399;
+    letter-spacing: 0.5px;
+  }
+
+  /* BANNER 2 — OG Image (1200x630) → display 760x400 */
+  #b2 {
+    height: 400px;
+    background: linear-gradient(145deg, #052e16 0%, #065f46 45%, #0d9488 100%);
+  }
+  #b2 .bg-circle {
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52,211,153,0.12) 0%, transparent 70%);
+  }
+  #b2 .bg-circle-2 {
+    position: absolute;
+    left: -60px;
+    bottom: -80px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+  }
+  #b2 .left-side {
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 380px;
+  }
+  #b2 .b2-eyebrow {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 12px;
+  }
+  #b2 .b2-title {
+    font-family: 'Georgia', serif;
+    font-size: 3.2rem;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  #b2 .b2-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    color: #34d399;
+    margin-bottom: 16px;
+  }
+  #b2 .b2-tagline {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    max-width: 320px;
+    margin-bottom: 24px;
+  }
+  #b2 .b2-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #b2 .b2-pill {
+    background: rgba(5,150,105,0.25);
+    border: 1px solid rgba(52,211,153,0.4);
+    color: #34d399;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+  #b2 .right-side {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  #b2 .app-icon-lg {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #059669, #064e3b);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    box-shadow: 0 8px 32px rgba(5,150,105,0.3);
+    border: 1px solid rgba(52,211,153,0.3);
+  }
+  #b2 .stats {
+    display: flex;
+    gap: 20px;
+  }
+  #b2 .stat {
+    text-align: center;
+  }
+  #b2 .stat-num {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    color: #34d399;
+    line-height: 1;
+  }
+  #b2 .stat-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #b2 .url-b2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* BANNER 3 — Facebook Event Cover (1920x1080 landscape) */
+  #b3 {
+    height: 430px;
+    background: #fff;
+  }
+  #b3 .left-green {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: linear-gradient(175deg, #052e16, #059669);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  #b3 .lg-cross { font-size: 3rem; color: #34d399; }
+  #b3 .lg-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.4rem;
+    color: #fff;
+    text-align: center;
+    padding: 0 16px;
+    line-height: 1.2;
+  }
+  #b3 .lg-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.62rem;
+    color: #6ee7b7;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  #b3 .right-content {
+    position: absolute;
+    left: 300px; right: 32px;
+    top: 50%; transform: translateY(-50%);
+  }
+  #b3 .rc-tag {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #059669;
+    margin-bottom: 12px;
+  }
+  #b3 .rc-headline {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+  #b3 .rc-desc {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.8rem;
+    color: #4b5563;
+    line-height: 1.65;
+    margin-bottom: 24px;
+    max-width: 380px;
+  }
+  #b3 .rc-features {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  #b3 .rc-feat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: #374151;
+  }
+  #b3 .rc-dot { width: 6px; height: 6px; border-radius: 50%; background: #059669; flex-shrink: 0; }
+  #b3 .rc-url {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    color: #9ca3af;
+  }
+  #b3 .rc-cta {
+    margin-top: 24px;
+    display: inline-block;
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 100px;
+  }
+</style>
+</head>
+<body>
+  <h1>Media Kit — Banners Wide</h1>
+  <p class="hint">LinkedIn Cover, OG Image e Facebook Event Cover</p>
+
+  <!-- BANNER 1: LinkedIn Cover -->
+  <div class="banner-wrap">
+    <div class="banner-label">Banner 1 — LinkedIn Cover (1584×396)</div>
+    <div class="banner" id="b1">
+      <div class="left-accent"></div>
+      <div class="cross">✦</div>
+      <div class="title-block">
+        <div class="eyebrow">App Devocional</div>
+        <div class="main-t">Bíblia na Mesa</div>
+        <div class="sub-t">365 devocionais para transformar sua caminhada com Deus</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="right-block">
+        <div class="pill-green">Gratuito</div>
+        <div class="tagline-r">Um devocional completo por dia, com Bíblia integrada e diário espiritual</div>
+        <div class="url">bibliaamesa.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER 2: OG Image -->
+  <div class="banner-wrap">
+    <div class="banner-label">Banner 2 — OG / Open Graph (1200×630)</div>
+    <div class="banner" id="b2">
+      <div class="bg-circle"></div>
+      <div class="bg-circle-2"></div>
+      <div class="left-side">
+        <div class="b2-eyebrow">Novo App Devocional</div>
+        <div class="b2-title">Bíblia<br>na Mesa</div>
+        <div class="b2-sub">365 dias na Presença de Deus</div>
+        <div class="b2-tagline">Um devocional completo para cada dia do ano, com versículos integrados, reflexões profundas e diário espiritual.</div>
+        <div class="b2-pills">
+          <div class="b2-pill">365 Devocionais</div>
+          <div class="b2-pill">Bíblia Integrada</div>
+          <div class="b2-pill">Gratuito</div>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="app-icon-lg">✦</div>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-num">365</div>
+            <div class="stat-label">Dias</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Gratuito</div>
+          </div>
+        </div>
+        <div class="url-b2">bibliaamesa.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER 3: Facebook Event Cover -->
+  <div class="banner-wrap">
+    <div class="banner-label">Banner 3 — Facebook / Capa de Evento</div>
+    <div class="banner" id="b3">
+      <div class="left-green">
+        <div class="lg-cross">✦</div>
+        <div class="lg-title">Bíblia<br>na Mesa</div>
+        <div class="lg-sub">365 Devocionais</div>
+      </div>
+      <div class="right-content">
+        <div class="rc-tag">Lançamento do App</div>
+        <div class="rc-headline">Comece cada dia<br>na Presença de Deus</div>
+        <div class="rc-desc">365 devocionais escritos para transformar sua vida espiritual. Reflexões profundas, Bíblia integrada e diário para registrar o que Deus fala ao seu coração.</div>
+        <div class="rc-features">
+          <div class="rc-feat"><div class="rc-dot"></div>365 textos devocionais</div>
+          <div class="rc-feat"><div class="rc-dot"></div>Versículos no hover</div>
+          <div class="rc-feat"><div class="rc-dot"></div>Diário espiritual</div>
+          <div class="rc-feat"><div class="rc-dot"></div>Modo noturno</div>
+          <div class="rc-feat"><div class="rc-dot"></div>100% gratuito</div>
+        </div>
+        <div class="rc-cta">Acessar Agora</div>
+        <div class="rc-url">bibliaamesa.com</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Kit — Stories/Reels | Bíblia na Mesa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #111; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 32px; }
+  h1 { font-family: 'Arial', sans-serif; font-size: 1rem; color: #6ee7b7; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+  .hint { font-family: 'Arial', sans-serif; font-size: 0.75rem; color: #6ee7b7; opacity: 0.7; text-align: center; margin-top: -20px; }
+  .cards { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; }
+
+  .story-wrap { text-align: center; }
+  .story-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    margin-bottom: 8px;
+  }
+
+  /* Story: 270x480 (display), represents 1080x1920 */
+  .story {
+    width: 270px;
+    height: 480px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: inline-block;
+  }
+
+  /* STORY 1 — Lançamento Hero */
+  #s1 {
+    background: linear-gradient(175deg, #052e16 0%, #064e3b 40%, #059669 80%, #10b981 100%);
+  }
+  #s1 .top-safe {
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 8px;
+  }
+  #s1 .top-dots {
+    display: flex; gap: 4px;
+  }
+  #s1 .top-dots span {
+    width: 40px; height: 2px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 2px;
+  }
+  #s1 .top-dots span:first-child { background: rgba(255,255,255,0.9); }
+  #s1 .cross-big {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3.5rem;
+    color: #34d399;
+  }
+  #s1 .pre-title {
+    position: absolute;
+    top: 158px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+  }
+  #s1 .main-title {
+    position: absolute;
+    top: 178px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Georgia', serif;
+    font-size: 2.4rem;
+    line-height: 1.2;
+    color: #fff;
+    padding: 0 16px;
+  }
+  #s1 .sub-title {
+    position: absolute;
+    top: 268px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    color: #34d399;
+    letter-spacing: 1px;
+  }
+  #s1 .tagline {
+    position: absolute;
+    top: 306px;
+    left: 20px; right: 20px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.78);
+  }
+  #s1 .swipe-area {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 140px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding-bottom: 24px; gap: 6px;
+  }
+  #s1 .swipe-pill {
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 100px;
+  }
+  #s1 .swipe-caret { font-size: 1.2rem; opacity: 0.6; }
+
+  /* STORY 2 — Devocional do Dia */
+  #s2 {
+    background: #fff;
+  }
+  #s2 .green-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 180px;
+    background: linear-gradient(135deg, #052e16, #059669);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  }
+  #s2 .day-num {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+  }
+  #s2 .devo-title {
+    font-family: 'Georgia', serif;
+    font-size: 1.4rem;
+    color: #fff;
+    text-align: center;
+    padding: 0 16px;
+    line-height: 1.25;
+  }
+  #s2 .verse-card {
+    position: absolute;
+    top: 164px;
+    left: 16px; right: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(5,150,105,0.15);
+    border-top: 3px solid #059669;
+  }
+  #s2 .verse-text-s {
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #1e3a2e;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  #s2 .verse-ref-s {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #059669;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #s2 .excerpt {
+    position: absolute;
+    top: 320px;
+    left: 20px; right: 20px;
+    font-family: 'Georgia', serif;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: #374151;
+    font-style: italic;
+  }
+  #s2 .journal-prompt {
+    position: absolute;
+    bottom: 100px;
+    left: 16px; right: 16px;
+    background: #ecfdf5;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border-left: 3px solid #059669;
+  }
+  #s2 .jp-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #059669;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  #s2 .jp-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: #374151;
+  }
+  #s2 .bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 72px;
+    background: #052e16;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+  }
+  #s2 .bb-logo {
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+  #s2 .bb-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    color: #34d399;
+    margin-top: 1px;
+  }
+  #s2 .bb-day {
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 100px;
+  }
+
+  /* STORY 3 — CTA Download */
+  #s3 {
+    background: linear-gradient(160deg, #1a1a2e 0%, #052e16 60%, #0d9488 100%);
+  }
+  #s3 .grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  #s3 .phone-mockup {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 220px;
+    background: #0f172a;
+    border-radius: 20px;
+    border: 2px solid rgba(52,211,153,0.4);
+    box-shadow: 0 0 40px rgba(52,211,153,0.2);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  #s3 .pm-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #059669, #34d399);
+  }
+  #s3 .pm-content {
+    flex: 1;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  #s3 .pm-title-line {
+    height: 8px;
+    background: #34d399;
+    border-radius: 4px;
+    width: 70%;
+  }
+  #s3 .pm-line {
+    height: 5px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+  }
+  #s3 .pm-line.short { width: 50%; }
+  #s3 .pm-verse {
+    background: rgba(52,211,153,0.1);
+    border-left: 2px solid #34d399;
+    border-radius: 4px;
+    height: 30px;
+    margin-top: 4px;
+  }
+  #s3 .pm-tag {
+    width: 50px; height: 16px;
+    background: #059669;
+    border-radius: 100px;
+  }
+  #s3 .headline {
+    position: absolute;
+    top: 280px;
+    left: 20px; right: 20px;
+    text-align: center;
+    font-family: 'Georgia', serif;
+    font-size: 1.7rem;
+    line-height: 1.25;
+    color: #fff;
+  }
+  #s3 .headline em {
+    color: #34d399;
+    font-style: normal;
+  }
+  #s3 .sub {
+    position: absolute;
+    top: 368px;
+    left: 20px; right: 20px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+  #s3 .feats {
+    position: absolute;
+    top: 420px;
+    left: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  #s3 .feat-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  #s3 .feat-dot {
+    width: 6px; height: 6px;
+    background: #34d399;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  #s3 .feat-t {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.85);
+  }
+  #s3 .cta-area {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 110px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  }
+  #s3 .cta-btn {
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border-radius: 100px;
+    box-shadow: 0 4px 20px rgba(5,150,105,0.4);
+  }
+  #s3 .cta-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.5);
+  }
+</style>
+</head>
+<body>
+  <h1>Media Kit — Stories &amp; Reels (9:16)</h1>
+  <p class="hint">Proporção 1080×1920 — Ideal para Instagram, TikTok e WhatsApp Status</p>
+
+  <div class="cards">
+
+    <!-- STORY 1 -->
+    <div class="story-wrap">
+      <div class="story-label">Story 1 — Lançamento Hero</div>
+      <div class="story" id="s1">
+        <div class="top-safe">
+          <div class="top-dots">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="cross-big">✦</div>
+        <div class="pre-title">Novo App Devocional</div>
+        <div class="main-title">Bíblia<br>na Mesa</div>
+        <div class="sub-title">365 dias na Presença de Deus</div>
+        <div class="tagline">Um devocional completo para cada dia do ano — com versículos, reflexão e oração.</div>
+        <div class="swipe-area">
+          <div class="swipe-caret">^</div>
+          <div class="swipe-pill">Deslize para Acessar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 2 -->
+    <div class="story-wrap">
+      <div class="story-label">Story 2 — Devocional do Dia</div>
+      <div class="story" id="s2">
+        <div class="green-top">
+          <div class="day-num">Dia 1 de 365</div>
+          <div class="devo-title">A Majestade<br>do Criador</div>
+        </div>
+        <div class="verse-card">
+          <div class="verse-text-s">"Porque dele, por ele e para ele são todas as coisas."</div>
+          <div class="verse-ref-s">Romanos 11:36</div>
+        </div>
+        <div class="excerpt">Contemplamos hoje a grandeza de Deus como fonte e sustento de toda a existência. Cada amanhecer é um convite a reconhecer que somos amados...</div>
+        <div class="journal-prompt">
+          <div class="jp-label">✍️ Diário Espiritual</div>
+          <div class="jp-text">O que o Espírito Santo te falou hoje?</div>
+        </div>
+        <div class="bottom-bar">
+          <div>
+            <div class="bb-logo">Bíblia na Mesa</div>
+            <div class="bb-sub">bibliaamesa.com</div>
+          </div>
+          <div class="bb-day">DIA 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 3 -->
+    <div class="story-wrap">
+      <div class="story-label">Story 3 — CTA Download</div>
+      <div class="story" id="s3">
+        <div class="grid-lines"></div>
+        <div class="phone-mockup">
+          <div class="pm-bar"></div>
+          <div class="pm-content">
+            <div class="pm-tag"></div>
+            <div class="pm-title-line"></div>
+            <div class="pm-line"></div>
+            <div class="pm-line short"></div>
+            <div class="pm-verse"></div>
+            <div class="pm-line"></div>
+            <div class="pm-line short"></div>
+          </div>
+        </div>
+        <div class="headline">Sua Palavra<br>para cada <em>dia</em></div>
+        <div class="sub">365 devocionais diários, Bíblia integrada, diário espiritual e modo noturno.</div>
+        <div class="feats">
+          <div class="feat-row"><div class="feat-dot"></div><div class="feat-t">365 devocionais completos</div></div>
+          <div class="feat-row"><div class="feat-dot"></div><div class="feat-t">Versículos com texto no hover</div></div>
+          <div class="feat-row"><div class="feat-dot"></div><div class="feat-t">Diário espiritual integrado</div></div>
+          <div class="feat-row"><div class="feat-dot"></div><div class="feat-t">100% gratuito, sem cadastro</div></div>
+        </div>
+        <div class="cta-area">
+          <div class="cta-btn">Acessar Gratuitamente</div>
+          <div class="cta-sub">bibliaamesa.com</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

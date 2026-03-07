@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Kit — Bíblia na Mesa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(145deg, #052e16 0%, #064e3b 60%, #0d9488 100%);
+    padding: 60px 32px 48px;
+    text-align: center;
+    border-bottom: 1px solid rgba(52,211,153,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.015) 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 60px
+    );
+  }
+  .hero-cross {
+    font-size: 3rem;
+    color: #34d399;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(52,211,153,0.15);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: #34d399;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    position: relative;
+    font-family: Georgia, serif;
+  }
+  .hero h1 strong { font-weight: 700; color: #34d399; }
+  .hero-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 0;
+    position: relative;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .meta-item {
+    text-align: center;
+  }
+  .meta-num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #34d399;
+    font-family: Georgia, serif;
+  }
+  .meta-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  /* Nav */
+  .nav {
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav a {
+    display: block;
+    padding: 16px 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: #34d399; border-bottom-color: #34d399; }
+  .nav a.active { color: #34d399; border-bottom-color: #34d399; }
+
+  /* Content */
+  .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+
+  .section { margin-bottom: 56px; }
+  .section-header { margin-bottom: 24px; }
+  .section-tag {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #059669;
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .kit-card {
+    background: #161616;
+    border: 1px solid #252525;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kit-card:hover {
+    border-color: #34d399;
+    transform: translateY(-2px);
+  }
+  .kit-card-preview {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #052e16, #064e3b);
+    position: relative;
+    overflow: hidden;
+  }
+  .kit-card-preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 30px
+    );
+  }
+  .kit-card-preview span { position: relative; z-index: 1; }
+  .kit-card-info { padding: 16px; }
+  .kit-card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .kit-card-meta {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 12px;
+  }
+  .kit-card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: rgba(5,150,105,0.15);
+    color: #34d399;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* Brand Colors */
+  .colors-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .color-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #161616;
+    border: 1px solid #252525;
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 180px;
+  }
+  .chip-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .chip-info {}
+  .chip-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .chip-hex {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.4);
+    font-family: monospace;
+  }
+
+  /* Copy tips */
+  .copy-block {
+    background: #161616;
+    border: 1px solid #252525;
+    border-left: 4px solid #059669;
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .copy-block-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #059669;
+    margin-bottom: 8px;
+  }
+  .copy-block-text {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.65;
+  }
+
+  /* Hashtags */
+  .hashtag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hashtag {
+    background: #161616;
+    border: 1px solid #252525;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+  }
+  .hashtag.primary { border-color: #059669; color: #34d399; }
+
+  /* Footer */
+  footer {
+    background: #0a0a0a;
+    border-top: 1px solid #1a1a1a;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  footer p { font-size: 0.75rem; color: rgba(255,255,255,0.3); line-height: 1.6; }
+  footer strong { color: #34d399; }
+</style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-cross">✦</div>
+    <div class="hero-badge">Media Kit Oficial</div>
+    <h1>Bíblia na <strong>Mesa</strong></h1>
+    <p class="hero-sub">365 dias na Presença de Deus — Kit de lançamento para redes sociais</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <div class="meta-num">365</div>
+        <div class="meta-label">Devocionais</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-num">7</div>
+        <div class="meta-label">Artes prontas</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-num">3</div>
+        <div class="meta-label">Formatos</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-num">100%</div>
+        <div class="meta-label">Gratuito</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="#artes" class="active">Artes</a>
+    <a href="#cores">Cores</a>
+    <a href="#copy">Copy</a>
+    <a href="#hashtags">Hashtags</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- ARTES -->
+    <div class="section" id="artes">
+      <div class="section-header">
+        <div class="section-tag">Arquivos prontos</div>
+        <div class="section-title">Artes para Redes Sociais</div>
+        <div class="section-desc">Abra cada arquivo no navegador, use PrintScreen ou ferramenta de captura de tela. As artes estão em escala reduzida para visualização — exportar na resolução nativa.</div>
+      </div>
+      <div class="cards-grid">
+        <a class="kit-card" href="post-feed.html" target="_blank">
+          <div class="kit-card-preview"><span>⬛</span></div>
+          <div class="kit-card-info">
+            <div class="kit-card-title">Posts Feed</div>
+            <div class="kit-card-meta">4 layouts · 1080 × 1080</div>
+            <div class="kit-card-tags">
+              <span class="tag">Instagram</span>
+              <span class="tag">Facebook</span>
+              <span class="tag">LinkedIn</span>
+            </div>
+          </div>
+        </a>
+        <a class="kit-card" href="stories.html" target="_blank">
+          <div class="kit-card-preview"><span>📱</span></div>
+          <div class="kit-card-info">
+            <div class="kit-card-title">Stories &amp; Reels</div>
+            <div class="kit-card-meta">3 layouts · 1080 × 1920</div>
+            <div class="kit-card-tags">
+              <span class="tag">Instagram</span>
+              <span class="tag">TikTok</span>
+              <span class="tag">WhatsApp</span>
+            </div>
+          </div>
+        </a>
+        <a class="kit-card" href="banner-wide.html" target="_blank">
+          <div class="kit-card-preview"><span>🖼️</span></div>
+          <div class="kit-card-info">
+            <div class="kit-card-title">Banners Wide</div>
+            <div class="kit-card-meta">3 layouts · 1200×630 / 1584×396</div>
+            <div class="kit-card-tags">
+              <span class="tag">LinkedIn Cover</span>
+              <span class="tag">OG Image</span>
+              <span class="tag">Facebook</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- CORES -->
+    <div class="section" id="cores">
+      <div class="section-header">
+        <div class="section-tag">Identidade Visual</div>
+        <div class="section-title">Paleta de Cores</div>
+        <div class="section-desc">Verde Esmeralda + Dourado — moderno, vibrante, minimalista.</div>
+      </div>
+      <div class="colors-grid">
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#059669"></div>
+          <div class="chip-info">
+            <div class="chip-name">Esmeralda Principal</div>
+            <div class="chip-hex">#059669</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#34d399"></div>
+          <div class="chip-info">
+            <div class="chip-name">Esmeralda Clara</div>
+            <div class="chip-hex">#34d399</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#f59e0b"></div>
+          <div class="chip-info">
+            <div class="chip-name">Dourado</div>
+            <div class="chip-hex">#f59e0b</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#052e16"></div>
+          <div class="chip-info">
+            <div class="chip-name">Verde Floresta</div>
+            <div class="chip-hex">#052e16</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#064e3b"></div>
+          <div class="chip-info">
+            <div class="chip-name">Verde Escuro</div>
+            <div class="chip-hex">#064e3b</div>
+          </div>
+        </div>
+        <div class="color-chip">
+          <div class="chip-swatch" style="background:#ffffff; border: 1px solid #333;"></div>
+          <div class="chip-info">
+            <div class="chip-name">Branco</div>
+            <div class="chip-hex">#ffffff</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COPY -->
+    <div class="section" id="copy">
+      <div class="section-header">
+        <div class="section-tag">Textos Prontos</div>
+        <div class="section-title">Copy para Legendas</div>
+        <div class="section-desc">Copie e adapte. Personalize com o devocional do dia.</div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-block-label">📱 Feed — Lançamento</div>
+        <div class="copy-block-text">
+          ✦ Bíblia na Mesa chegou!<br><br>
+          365 devocionais para um ano inteiro na Presença de Deus. Um texto completo para cada dia — com versículo, reflexão profunda, oração e diário espiritual.<br><br>
+          Completamente gratuito. Sem cadastro. Só você e a Palavra.<br><br>
+          Acesse agora → bibliaamesa.com
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-block-label">📖 Feed — Devocional do Dia</div>
+        <div class="copy-block-text">
+          "Porque dele, por ele e para ele são todas as coisas." — Romanos 11:36<br><br>
+          Hoje contemplamos a grandeza de Deus como fonte e sustento de toda a existência. Cada amanhecer é um convite a reconhecer que somos amados por um Criador infinito.<br><br>
+          Leia o devocional completo do Dia 1 gratuitamente no Bíblia na Mesa ↓<br><br>
+          bibliaamesa.com
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-block-label">🎬 Stories — Swipe Up</div>
+        <div class="copy-block-text">
+          Você tem 5 minutos pela manhã? ☕<br><br>
+          O Bíblia na Mesa tem um devocional novo a cada dia do ano — versículo, reflexão e oração. Deslize para acessar agora, é 100% gratuito.
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-block-label">🔗 LinkedIn</div>
+        <div class="copy-block-text">
+          Lancei um aplicativo devocional gratuito chamado Bíblia na Mesa.<br><br>
+          365 devocionais completos para o ano inteiro. Com Bíblia integrada, diário espiritual e modo noturno. Sem anúncios, sem cadastro.<br><br>
+          O objetivo é simples: ajudar pessoas a terem um tempo diário de qualidade com Deus, de forma prática e acessível.<br><br>
+          Se você conhece alguém que se beneficiaria, compartilhe: bibliaamesa.com
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-block-label">💬 WhatsApp / Grupos</div>
+        <div class="copy-block-text">
+          Compartilha com quem precisa 🙏<br><br>
+          Criei um app devocional com 365 textos para o ano inteiro. Gratuito, sem cadastro. Tem versículos integrados, modo noturno e diário para anotar o que Deus fala.<br><br>
+          👉 bibliaamesa.com
+        </div>
+      </div>
+    </div>
+
+    <!-- HASHTAGS -->
+    <div class="section" id="hashtags">
+      <div class="section-header">
+        <div class="section-tag">Alcance Orgânico</div>
+        <div class="section-title">Hashtags Recomendadas</div>
+        <div class="section-desc">Use nos posts para ampliar o alcance. Misture hashtags principais com secundárias.</div>
+      </div>
+      <div class="hashtag-list">
+        <span class="hashtag primary">#bibliaamesa</span>
+        <span class="hashtag primary">#devocional365</span>
+        <span class="hashtag primary">#devocionaldodia</span>
+        <span class="hashtag">#vidacrista</span>
+        <span class="hashtag">#tempocombiblia</span>
+        <span class="hashtag">#palavradedeus</span>
+        <span class="hashtag">#devocional</span>
+        <span class="hashtag">#fecristos</span>
+        <span class="hashtag">#presencadedeus</span>
+        <span class="hashtag">#leiturabiblica</span>
+        <span class="hashtag">#oracao</span>
+        <span class="hashtag">#cristaodigital</span>
+        <span class="hashtag">#bible</span>
+        <span class="hashtag">#devotional</span>
+        <span class="hashtag">#jesus</span>
+        <span class="hashtag">#fe</span>
+        <span class="hashtag">#graça</span>
+        <span class="hashtag">#espiritosanto</span>
+        <span class="hashtag">#appcristo</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>
+      <strong>Bíblia na Mesa</strong> · Media Kit de Lançamento<br>
+      bibliaamesa.com · 365 dias na Presença de Deus<br>
+      Use os materiais livremente para divulgar o app.
+    </p>
+  </footer>
+
+</body>
+</html>

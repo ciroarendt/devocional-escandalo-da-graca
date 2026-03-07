@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Kit — Post Feed | Bíblia na Mesa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #1a1a2e; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 32px; }
+  h1 { font-family: 'Arial', sans-serif; font-size: 1rem; color: #6ee7b7; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+  .hint { font-family: 'Arial', sans-serif; font-size: 0.75rem; color: #6ee7b7; opacity: 0.7; text-align: center; margin-top: -20px; }
+  .card-wrap { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
+
+  /* === POST 1: Lançamento Principal === */
+  .post {
+    width: 540px;
+    height: 540px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+  .post-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .post-wrapper { text-align: center; }
+
+  /* POST 1 — Lançamento */
+  #p1 {
+    background: linear-gradient(145deg, #052e16 0%, #064e3b 50%, #0d9488 100%);
+  }
+  #p1 .noise {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  #p1 .cross {
+    position: absolute;
+    top: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    color: #34d399;
+    opacity: 0.9;
+  }
+  #p1 .eyebrow {
+    position: absolute;
+    top: 110px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #6ee7b7;
+    font-weight: 700;
+  }
+  #p1 .title {
+    position: absolute;
+    top: 140px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Georgia', serif;
+    font-size: 3.6rem;
+    line-height: 1.1;
+    color: #ffffff;
+    font-weight: normal;
+    padding: 0 24px;
+  }
+  #p1 .title em {
+    display: block;
+    font-style: normal;
+    color: #34d399;
+    font-size: 2.1rem;
+  }
+  #p1 .divider {
+    position: absolute;
+    bottom: 155px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+  }
+  #p1 .tagline {
+    position: absolute;
+    bottom: 110px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.5px;
+    padding: 0 40px;
+    line-height: 1.5;
+  }
+  #p1 .pill {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #059669;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 24px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  #p1 .corner-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 20px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+  }
+
+  /* POST 2 — Citação / Devocional */
+  #p2 {
+    background: #fff;
+  }
+  #p2 .top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #059669, #10b981, #f59e0b);
+  }
+  #p2 .quote-mark {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    font-size: 8rem;
+    line-height: 1;
+    color: #ecfdf5;
+    font-family: 'Georgia', serif;
+  }
+  #p2 .quote-text {
+    position: absolute;
+    top: 100px;
+    left: 48px;
+    right: 48px;
+    font-family: 'Georgia', serif;
+    font-size: 1.4rem;
+    line-height: 1.65;
+    color: #0f172a;
+    font-style: italic;
+  }
+  #p2 .verse-ref {
+    position: absolute;
+    bottom: 140px;
+    left: 48px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #059669;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  #p2 .bottom-strip {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 100px;
+    background: #052e16;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    gap: 16px;
+  }
+  #p2 .app-icon {
+    width: 48px; height: 48px;
+    background: #059669;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  #p2 .app-info { flex: 1; }
+  #p2 .app-name {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  #p2 .app-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.68rem;
+    color: #6ee7b7;
+    letter-spacing: 0.5px;
+  }
+  #p2 .day-tag {
+    background: rgba(5,150,105,0.2);
+    color: #34d399;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 100px;
+  }
+
+  /* POST 3 — Engajamento / Pergunta */
+  #p3 {
+    background: linear-gradient(160deg, #f59e0b 0%, #ea580c 100%);
+  }
+  #p3 .pattern {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  }
+  #p3 .badge {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+  #p3 .question-icon {
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    font-size: 3rem;
+    line-height: 1;
+  }
+  #p3 .question {
+    position: absolute;
+    top: 160px;
+    left: 40px; right: 40px;
+    font-family: 'Georgia', serif;
+    font-size: 2.2rem;
+    line-height: 1.25;
+    color: #fff;
+    font-weight: normal;
+  }
+  #p3 .instruction {
+    position: absolute;
+    bottom: 120px;
+    left: 40px; right: 40px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+  #p3 .options {
+    position: absolute;
+    bottom: 40px;
+    left: 40px; right: 40px;
+    display: flex;
+    gap: 12px;
+  }
+  #p3 .opt {
+    flex: 1;
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+  }
+
+  /* POST 4 — Funcionalidades */
+  #p4 {
+    background: #f8fffe;
+  }
+  #p4 .header-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(135deg, #052e16 0%, #059669 100%);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #p4 .header-title {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    color: #fff;
+  }
+  #p4 .header-sub {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: #6ee7b7;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  #p4 .features {
+    position: absolute;
+    top: 220px;
+    left: 32px; right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #p4 .feat {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(5,150,105,0.08);
+    border-left: 4px solid #059669;
+  }
+  #p4 .feat-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    width: 40px;
+    text-align: center;
+  }
+  #p4 .feat-text { flex: 1; }
+  #p4 .feat-title {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+  #p4 .feat-desc {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.72rem;
+    color: #64748b;
+    line-height: 1.4;
+  }
+  #p4 .cta-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 32px; right: 32px;
+    background: #059669;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <h1>Media Kit — Post Feed (1:1)</h1>
+  <p class="hint">Clique com botão direito → "Salvar como imagem" ou use a ferramenta de captura de tela</p>
+
+  <div class="card-wrap">
+
+    <!-- POST 1: Lançamento Principal -->
+    <div class="post-wrapper">
+      <div class="post-label">Post 1 — Lançamento Principal</div>
+      <div class="post" id="p1">
+        <div class="noise"></div>
+        <div class="cross">✦</div>
+        <div class="eyebrow">Novo App Devocional</div>
+        <div class="title">
+          Bíblia na Mesa
+          <em>365 Devocionais</em>
+        </div>
+        <div class="divider"></div>
+        <div class="tagline">Um devocional por dia para transformar<br>sua caminhada com Deus.</div>
+        <div class="pill">Disponível Gratuitamente</div>
+        <div class="corner-badge">@bibliaamesa</div>
+      </div>
+    </div>
+
+    <!-- POST 2: Citação -->
+    <div class="post-wrapper">
+      <div class="post-label">Post 2 — Versículo / Devocional</div>
+      <div class="post" id="p2">
+        <div class="top-bar"></div>
+        <div class="quote-mark">"</div>
+        <div class="quote-text">
+          Porque dele, por ele e para ele são todas as coisas. A ele seja a glória para sempre.
+        </div>
+        <div class="verse-ref">Romanos 11:36 — Dia 1 de 365</div>
+        <div class="bottom-strip">
+          <div class="app-icon">✦</div>
+          <div class="app-info">
+            <div class="app-name">Bíblia na Mesa</div>
+            <div class="app-sub">365 dias na Presença de Deus</div>
+          </div>
+          <div class="day-tag">DIA 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 3: Engajamento -->
+    <div class="post-wrapper">
+      <div class="post-label">Post 3 — Engajamento</div>
+      <div class="post" id="p3">
+        <div class="pattern"></div>
+        <div class="badge">Comunidade</div>
+        <div class="question-icon">🙋</div>
+        <div class="question">Como você começa seu tempo com Deus pela manhã?</div>
+        <div class="instruction">Conta pra gente nos comentários! E baixe o app para ter um devocional novo a cada dia do ano.</div>
+        <div class="options">
+          <div class="opt">📖 Leitura bíblica</div>
+          <div class="opt">🙏 Oração primeiro</div>
+          <div class="opt">☕ Devocional</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 4: Funcionalidades -->
+    <div class="post-wrapper">
+      <div class="post-label">Post 4 — Funcionalidades do App</div>
+      <div class="post" id="p4">
+        <div class="header-bar">
+          <div class="header-title">Bíblia na Mesa</div>
+          <div class="header-sub">Tudo que você precisa</div>
+        </div>
+        <div class="features">
+          <div class="feat">
+            <div class="feat-icon">📅</div>
+            <div class="feat-text">
+              <div class="feat-title">365 Devocionais</div>
+              <div class="feat-desc">Um texto completo para cada dia do ano</div>
+            </div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon">📖</div>
+            <div class="feat-text">
+              <div class="feat-title">Bíblia Integrada</div>
+              <div class="feat-desc">Versículos com hover — texto na hora</div>
+            </div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon">✍️</div>
+            <div class="feat-text">
+              <div class="feat-title">Diário Espiritual</div>
+              <div class="feat-desc">Registre aprendizados e o que ouviu de Deus</div>
+            </div>
+          </div>
+          <div class="feat">
+            <div class="feat-icon">🌙</div>
+            <div class="feat-text">
+              <div class="feat-title">Modo Noturno</div>
+              <div class="feat-desc">Para sua leitura a qualquer hora do dia</div>
+            </div>
+          </div>
+        </div>
+        <div class="cta-bottom">Acesse Gratuitamente</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
